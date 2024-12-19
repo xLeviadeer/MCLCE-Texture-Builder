@@ -1,0 +1,18 @@
+﻿<Window x:Class="MCWiiU_Texture_Builder__Frontend.Info"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MCWiiU_Texture_Builder__Frontend"
+        mc:Ignorable="d"
+        Title="Info" Height="545" Width="702" ResizeMode="NoResize" ShowInTaskbar="False" Topmost="True" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Rectangle HorizontalAlignment="Center" Height="426" Margin="0,47,0,0" Stroke="#FFCCCCCC" Fill="#FFE6E6E6" VerticalAlignment="Top" Width="666"/>
+        <TextBlock Margin="0,52,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="420" HorizontalAlignment="Center" Width="640"><Run FontWeight="Bold" Text="BUILD MODE"/><Run Text="&#xA;The Build Mode explains how the program will attempt to build your texture pack. A lot of the time the textures aren't exactly formatted as they are supposed to be.&#xA;"/><Run FontWeight="Bold" Text="Replace:"/><Run Text="&#xA;   - Overall, replace mode will force the program to generate a completed texture pack&#xA;   - Replace mode will interpret what it thinks the right texture format should be, creating a &quot;complete&quot; texture pack&#xA;   - Replace mode will always generate MipMap textures&#xA;   - You should use replace mode if you don't understand what a MipMap is, or how to modify textures&#xA;"/><Run FontWeight="Bold" Text="Error:"/><Run Text="&#xA;   - Error mode will place error texture markers on texture sheets where the texture wasn't formatted correctly&#xA;   - This makes it easier to manually place the desired texture afterwards&#xA;   - Error mode will only create MipMap textures when there are no errors&#xA;   - You should only use error mode if you understand how to generate MipMaps and modify textures"/><LineBreak/><Run Text="Note: Both modes will generate an errors TXT in the output directory if there were any complications generating the textures&#xA;&#xA;"/><Run FontWeight="Bold" Text="GAME (STRUCT) OUTPUT"/><Run Text="&#xA;Determines how to write output files&#xA;"/><Run FontWeight="Bold" Text="Anything That Isn't Dump:"/><Run Text="&#xA;   - Modes that aren't Dump Mode are called 'Build' Modes&#xA;   - Build mode will build a Game Specific (WiiU, Xbox360, PS4, etc.) file-structure and write textures into it&#xA;   - Build modes are made to match up with the prexisting console's directories&#xA;   - You should use a build mode if you are going to put the texture pack onto your console&#xA;"/><Run FontWeight="Bold" Text="Dump:"/><Run Text="&#xA;   - Dump mode will dump all the textures into the output directory&#xA;   - You should use dump mode if you are trying see all WiiU textures (after conversion) easily&#xA;                "/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="10,19,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="28" Width="486" FontSize="16"><Run FontWeight="Bold" Text="Information about &quot;Game (Struct) Output&quot; and &quot;Build Mode&quot;"/></TextBlock>
+
+    </Grid>
+</Window>

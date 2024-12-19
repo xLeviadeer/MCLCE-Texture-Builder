@@ -1,0 +1,10 @@
+New Support Instructions
+
+1: Update the latest supported version in global\\supported_versions.json
+    - should be in terms of java, the program will add the extra 0 for bedrock
+2: Update the supported versions max/min in SupportedTypes.py
+3: Create new python_builder fileset
+    - this will auto generate the new selection versions for the frontend
+4: add any support to ui interface (optional)
+    - new versions
+    - new games

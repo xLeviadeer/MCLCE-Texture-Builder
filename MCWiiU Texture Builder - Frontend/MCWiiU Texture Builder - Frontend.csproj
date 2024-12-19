@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+	  <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>MCWiiU_Texture_Builder__Frontend</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <Authors>xLeviadeer</Authors>
+    <PackageIcon>Re.png</PackageIcon>
+    <FileVersion>1.5</FileVersion>
+    <ApplicationIcon>Resource\Re.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="LeRe.png" />
+    <None Remove="Re.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Resource\Re.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="WindowsAPICodePack" Version="7.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="LeRe.png" />
+    <Resource Include="Re.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resource\Re.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+</Project>

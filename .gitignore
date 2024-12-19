@@ -1,3 +1,26 @@
+# vscode
+.vscode/
+.VSCodeCounter/
+
+# base textures
+MCWiiU Texture Builder - Rebuilt/base_textures/*
+!MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_abstract/
+!MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_mipmaps/
+!MCWiiU Texture Builder - Rebuilt/base_textures/error.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/notFound.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_block.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_item.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_particle.png
+
+# python builder
+MCWiiU Texture Builder - Rebuilt/python_builder/*
+
+# notes
+MCWiiU Texture Builder - Rebuilt/Info/NOTES.txt
+
+# output
+MCWiiU Texture Builder - Rebuilt/output/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

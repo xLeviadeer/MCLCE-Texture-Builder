@@ -1,0 +1,175 @@
+﻿<Window x:Class="MCWiiU_Texture_Builder___Frontend.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MCWiiU_Texture_Builder___Frontend" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d"
+        Title="Minecraft WiiU Texture Builder 1.5" 
+        Height="593.75" Width="531.25" 
+        MinHeight="593.75" MinWidth="500" 
+        MaxHeight="1484.375" MaxWidth="1328"
+        WindowStartupLocation="CenterScreen" 
+        FontFamily="Arial Rounded MT Bold" 
+        Icon="/Re.png">
+
+    <!--Basically variables--> 
+    <Window.Resources>
+        <!--Shared int value for the font size universally for all things 
+        This wont set the "Currently Supports" FontSize--> 
+        <sys:Double x:Key="UniversalFontSize">14.0</sys:Double>
+        
+        <!--Style all used things to the correct FontSize--> 
+        <Style TargetType="Label">
+            <Setter Property="FontSize" Value="{StaticResource UniversalFontSize}"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="{StaticResource UniversalFontSize}"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="FontSize" Value="{StaticResource UniversalFontSize}"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="{StaticResource UniversalFontSize}"/>
+        </Style>
+    </Window.Resources>
+    
+    <!--Window grid format--> 
+    <Grid ShowGridLines="False" Margin="5,5,5,5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45"/>
+            <RowDefinition Height="1*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" ShowGridLines="False">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="12*"/>
+                <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" FontSize="20" FontFamily="Arial Rounded MT Bold" Margin="5,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left">
+                <Run Foreground="#FF457F3C" Text="Minecraft"/>
+                <Run Text=" "/><Run Foreground="#FF909090" Text="Wii"/>
+                <Run Text=""/><Run Foreground="#FF3FBDFF" Text="U"/>
+                <Run Text=""/><Run Foreground="Black" Text="Texture Builder"/>
+            </TextBlock>
+            <Image Grid.Column="1" Source="/LeRe.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,5"/>
+        </Grid>
+        <Grid Grid.Row="1" ShowGridLines="False">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="18*"/>
+                <RowDefinition Height="18*"/>
+                <RowDefinition Height="12*"/>
+                <RowDefinition Height="6*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" ShowGridLines="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.RowSpan="2" Content="Import Configuration" Margin="5,0,0,0"/>
+                <Border Grid.Row="1" Grid.RowSpan="1" BorderThickness="1" BorderBrush="Black" Margin="5,3,5,5">
+                    <Grid ShowGridLines="False" Margin="5,5,5,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="6" Content="Texture Pack Input Folder/File" />
+                        <Button Grid.Row="1" x:Name="InputButton" Content="Browse" Margin="5,0,5,10" Click="InputButton_Click"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" x:Name="InputText" Text="Browse a path" Margin="5,0,5,10" VerticalContentAlignment="Center" TextWrapping="NoWrap" VerticalScrollBarVisibility="Disabled" MaxLines="1" IsReadOnly="True" TextChanged="InputText_TextChanged"/>
+                        <Label Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Game Input" />
+                        <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="InputGameCombo" Margin="5,0,5,10" VerticalContentAlignment="Center" Background="Black" IsReadOnly="True" SelectionChanged="InputGameCombo_SelectionChanged"/>
+                        <Label Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" Content="Version Input" />
+                        <ComboBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="InputVersionCombo" Margin="5,0,5,10" VerticalContentAlignment="Center" Background="Black" IsReadOnly="True" SelectionChanged="InputVersionCombo_SelectionChanged"/>
+                    </Grid>
+                </Border>
+            </Grid>
+            <Grid Grid.Row="1" ShowGridLines="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.RowSpan="2" Content="Export Configuration" Margin="5,0,0,0"/>
+                <Border Grid.Row="1" Grid.RowSpan="1" BorderThickness="1" BorderBrush="Black" Margin="5,3,5,5">
+                    <Grid ShowGridLines="False" Margin="5,5,5,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="6" Content="Output Folder" />
+                        <Button Grid.Row="1" x:Name="OutputButton" Content="Browse" Margin="5,0,5,10" Click="OutputButton_Click"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="5" x:Name="OutputText" Text="Browse a path" Margin="5,0,5,10" VerticalContentAlignment="Center" TextWrapping="NoWrap" VerticalScrollBarVisibility="Disabled" MaxLines="1" IsReadOnly="True" TextChanged="InputText_TextChanged"/>
+                        <Label Grid.Row="2" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Game (Struct) Output" />
+                        <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="OutputGameCombo" Margin="5,0,5,10" VerticalContentAlignment="Center" Background="Black" IsReadOnly="True" SelectionChanged="OutputGameCombo_SelectionChanged"/>
+                        <Label Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" Content="Output Drive Type" />
+                        <ComboBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="OutputDriveCombo" Margin="5,0,5,10" VerticalContentAlignment="Center" Background="Black" IsReadOnly="True" SelectionChanged="OutputDriveCombo_SelectionChanged"/>
+                    </Grid>
+                </Border>
+            </Grid>
+            <Grid Grid.Row="2" ShowGridLines="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Grid.RowSpan="2" Content="Build Configuration" Margin="5,0,0,0"/>
+                <Border Grid.Row="1" Grid.RowSpan="1" BorderThickness="1" BorderBrush="Black" Margin="5,10,5,5">
+                    <Grid ShowGridLines="False" Margin="5,5,5,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="2*"/>
+                            <RowDefinition Height="3*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="0" Grid.ColumnSpan="2" Content="Build Mode" />
+                        <ComboBox Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="BuildModeCombo" Margin="5,0,5,10" VerticalContentAlignment="Center" Background="Black" IsReadOnly="True" SelectionChanged="BuildModeCombo_SelectionChanged"/>
+                        <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Grid.ColumnSpan="2" Content="Size Mode" />
+                        <ComboBox Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" x:Name="SizeModeCombo" Margin="5,0,5,10" VerticalContentAlignment="Center" Background="Black" IsReadOnly="True" SelectionChanged="SizeModeCombo_SelectionChanged"/>
+                        <Label Grid.Row="0" Grid.RowSpan="2" Grid.Column="4" Grid.ColumnSpan="2" Content="Config Help" />
+                        <Button Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" x:Name="BuildHelpButton" Content="Help Configuring?" Margin="5,0,5,10" Click="BuildHelpButton_Click"/>
+                    </Grid>
+                </Border>
+            </Grid>
+            <Grid Grid.Row="3" Margin="5,5,5,0" ShowGridLines="False">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Grid.Column="0" x:Name="ContactButton" Content="Contact" Margin="5,5,5,5" Click="ContactButton_Click"/>
+                <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" x:Name="OpenButton" Content="Open Output Folder" Margin="5,5,5,5" Click="OpenButton_Click"/>
+                <Button Grid.Row="0" Grid.Column="5" x:Name="BuildButton" Content="Build" Margin="5,5,5,5" Click="BuildButton_Click"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="5" x:Name="SupportLabel" Text="Currently Supports:" FontSize="10" VerticalAlignment="Center" HorizontalAlignment="Center"/>                
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

@@ -1,0 +1,15 @@
+--- Documentation Standards ---
+
+Description:
+    -brief-description
+---
+Arguments:
+    * -argument-name : -type
+        * -possible-value: -description
+        * -argument-description
+---
+Returns:
+    * -return-type : -return-description
+---
+Other:
+    * -information

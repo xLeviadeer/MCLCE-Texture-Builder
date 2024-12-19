@@ -1,0 +1,9 @@
+Making a new Supported Type
+- add to supportedTypes
+- wiiu library
+- color sigs
+- linking lib
+    - base lib
+    - abstract and external textures
+- version patches
+- bedrock support of the same stuff
