@@ -1,3 +1,0 @@
-﻿<Rectangle Grid.Row="0" Fill="Blue"/>
-
-https://www.google.com/search?client=firefox-b-1-d&q=what+is+a+Binding+Element+WPF#vhid=4hBVSWWt65U4YM&vssid=l

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MCWiiU_Texture_Builder___Frontend" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Minecraft WiiU Texture Builder 1.5" 
+        Title="Minecraft WiiU Texture Builder 1.6" 
         Height="593.75" Width="531.25" 
         MinHeight="593.75" MinWidth="500" 
         MaxHeight="1484.375" MaxWidth="1328"

@@ -13,8 +13,8 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("xLeviadeer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("1.5")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+77b5ffa70053bbcb2c9a3b400476803a9a3c9b7e")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("1.6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+5c61089f030aa020ad0411bac849f2f6adbde6bf")]
 [assembly: System.Reflection.AssemblyProductAttribute("MCWiiU Texture Builder - Frontend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MCWiiU Texture Builder - Frontend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

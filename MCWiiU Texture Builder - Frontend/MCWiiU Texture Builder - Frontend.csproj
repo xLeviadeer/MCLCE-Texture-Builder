@@ -10,7 +10,7 @@
     <UseWPF>true</UseWPF>
     <Authors>xLeviadeer</Authors>
     <PackageIcon>Re.png</PackageIcon>
-    <FileVersion>1.5</FileVersion>
+    <FileVersion>1.6</FileVersion>
     <ApplicationIcon>Resource\Re.ico</ApplicationIcon>
   </PropertyGroup>
 

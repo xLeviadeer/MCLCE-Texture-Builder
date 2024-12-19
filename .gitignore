@@ -1,6 +1,11 @@
+# builds
+MCWiiU Texture Builder - Frontend/bin/
+MCWiiU Texture Builder - Frontend/obj/
+
 # vscode
-.vscode/
-.VSCodeCounter/
+MCWiiU Texture Builder - Rebuilt/.vscode/
+MCWiiU Texture Builder - Rebuilt/.VSCodeCounter/
+MCWiiU Texture Builder - Frontend/.vs/
 
 # base textures
 MCWiiU Texture Builder - Rebuilt/base_textures/*
