@@ -52,6 +52,7 @@ class LoggerMode(Enum):
     CUSTOMFUNCTIONRECURSION = _LoggerValue(False, "  * (", ")", isIndentable=True, isCustom=True)
     PATCHFUNCTION = _LoggerValue(False, "  *", isIndentable=True, isCustom=True)
     DEBUGTWO = _LoggerValue(False, "   *", isIndentable=True)
+    DEBUGBRACKETRANDOM = _LoggerValue(False, "  '", isIndentable=True)
 
 # sets mods to the module
 module = sys.modules[__name__]
