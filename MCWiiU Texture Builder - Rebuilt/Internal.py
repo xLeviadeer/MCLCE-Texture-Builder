@@ -8,14 +8,14 @@ from CodeLibs import Json
 import Global
 import SupportedTypes
 from zipfile import ZipFile
-from Read import readLinkLibFor
-from Read import readWiiuLibFor
 from Utility import singularSizeOnTexSheet
 import Utility as ut
 import Read as rd
 from CustomProcessing.Custom import runFunctionFromPath
 from CodeLibs.Path import Path
 from builtins import type as typeof
+from CodeLibs.ConsoleWriter import Writer
+from CodeLibs.ConsoleWriter import WiiULocation
 
 # moves assets to the frontend
 def moveAssets(set):
@@ -221,8 +221,8 @@ def generateVersionPatches():
 
             # type specific variables
             typeAbstract = type + "_abstract"
-            linkArr = readLinkLibFor(Global.inputGame, type)
-            linkAbstract = readLinkLibFor(Global.inputGame, typeAbstract)
+            linkArr = rd.readLinkLibFor(Global.inputGame, type)
+            linkAbstract = rd.readLinkLibFor(Global.inputGame, typeAbstract)
 
             # function to find differences (functionized to save space in file)
             def addMissingToVersionPatches(arr, arrType):
@@ -340,8 +340,8 @@ def generateColorSignatures(type, mode):
 
     # -- WiiU --
     if (Global.inputGame == "wiiu"): # type in only needed for the wiiu build (because the wiiu build is type specific)
-        wiiuSheet = readWiiuLibFor(type, "Arr")
-        wiiuAbstract = readWiiuLibFor(type, "Abstract")
+        wiiuSheet = rd.readWiiuLibFor(type, "Arr")
+        wiiuAbstract = rd.readWiiuLibFor(type, "Abstract")
 
         if (wiiuSheet != False):
             # reg loop section
@@ -680,9 +680,9 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
                     singularSize = 8
 
                 # sheet and override reads
-                wiiuArr = readWiiuLibFor(wiiuType, "Arr")
-                wiiuOverride = readLinkLibFor(game, f"{wiiuType}_override")
-                wiiuLoc = readWiiuLibFor(wiiuType, "Loc")
+                wiiuArr = rd.readWiiuLibFor(wiiuType, "Arr")
+                wiiuOverride = rd.readLinkLibFor(game, f"{wiiuType}_override")
+                wiiuLoc = rd.readWiiuLibFor(wiiuType, "Loc")
 
                 # OVERRIDE
                 doSheetProcessing = True
@@ -714,7 +714,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
 
                     # read wiiu image and link arr
                     wiiuImage = readWiiuImage(game, False, f"wiiu_{wiiuType}")
-                    linkArr = readLinkLibFor(game, type)
+                    linkArr = rd.readLinkLibFor(game, type)
                     reconstructedImage = ut.blankImage(wiiuImage.size)
                     
                     # loop through textures on the sheet
@@ -760,12 +760,12 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
                         writeImage(reconstructedImage, game, version, wiiuType, wiiuLoc[2]) # uses the wiiu sheet name
 
                 # ABSTRACT
-                wiiuAbstract = readWiiuLibFor(wiiuType, "Abstract")
+                wiiuAbstract = rd.readWiiuLibFor(wiiuType, "Abstract")
                 if (wiiuAbstract != False):
                     print("   abstract found")
 
                     # read link arr
-                    linkAbstract = readLinkLibFor(game, f"{type}_abstract")
+                    linkAbstract = rd.readLinkLibFor(game, f"{type}_abstract")
 
                     # loop through textures in the abstract list
                     for wiiuName in wiiuAbstract:
@@ -830,3 +830,72 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
     # save the inequalities list to a file
     if (doGeneration == True): return # dont run if generating images
     Json.writeAll(Path("equality_libraries", "inequalities").getPath(), inequalities)
+
+# generates the MT Locs
+def generateMTLocs():
+    # output text
+    hierarchy = {
+        "Base Game": {
+            "Main/None": {
+                "Steve Skins": "mob\\."
+            },
+            "1_2_2": {},
+            "TitleUpdate": {
+                "Alex Skins": "mob\\."
+            }
+        },
+        "Update": {
+            "Main/None": {},
+            "1_2_2": {},
+            "TitleUpdate": {
+                "Dev Skins": "mob\\."
+            }
+        }
+    }
+    lst = ["----- Textures as a List of File Locations -----\n"]
+    lst.append("Dev Skins are located at: storage_mlc\\usr\\title\\0005000e\\101d9d00\\content\\Common\\res\\TitleUpdate\\res\\mob\\")
+    lst.append("Steve Skins are located at: storage_mlc\\usr\\title\\00050000\\101d9d00\\content\\Common\\res\\mob\\")
+    lst.append("Alex Skins are located at: storage_mlc\\usr\\title\\00050000\\101d9d00\\content\\Common\\res\\TitleUpdate\\res\\mob\\")
+    lst.append("") # empty makes a new line
+
+    # writer
+    writer = Writer("build", Path())
+
+    # for each type (depends on java)
+    for type in SupportedTypes.supportedTypes["java"]:
+        # wiiu reads
+        wiiuAbstract = rd.readWiiuLibFor(type, "Abstract")
+        wiiuLoc = rd.readWiiuLibFor(type, "Loc")
+
+        # if there is a sheet
+        if (wiiuLoc != False):
+            wiiuName = ut.getWiiuNameFromAbstract(wiiuLoc[2])
+            print(f"found sheet: {wiiuName}")
+            # list
+            path = writer.generatePath(WiiULocation("system", wiiuLoc[0], wiiuLoc[1], Path(wiiuLoc[2])), type)
+            lst.append(f"{wiiuLoc[2]}: {path.getPath(withFirstSlash=False)}.png")
+            # hierarchy
+            side = "Base Game" if (wiiuLoc[0] == "base") else "Update"
+            section = "Main/None" if (wiiuLoc[1] == "main") else ("1_2_2" if (wiiuLoc[1] == "122") else "TitleUpdate")
+            addon = wiiuLoc[2]
+            hierarchy[side][section][wiiuName] = f"{addon}.png"
+
+        # if there is an abstract
+        if (wiiuAbstract != False):
+            # for every key, value in the dict
+            for wiiuName, location in wiiuAbstract.items():
+                print(f"found abstract: {wiiuName}")
+                # list
+                path = writer.generatePath(WiiULocation("system", location[0], location[1], Path(location[2])), type)
+                lst.append(f"{wiiuName}: {path.getPath(withFirstSlash=False)}.png")
+                # hierarchy
+                side = "Base Game" if (location[0] == "base") else "Update"
+                section = "Main/None" if (location[1] == "main") else ("1_2_2" if (location[1] == "122") else "TitleUpdate")
+                addon = location[2]
+                hierarchy[side][section][wiiuName] = f"{addon}.png"
+
+    # write MTLocs
+    Json.writeAll("\\Info\\MTLocs.json", hierarchy)
+    with open(f"{Global.getMainWorkingLoc()}\\Info\\MTLocs.txt", 'w') as MTLocs:
+        MTLocs.write("\n".join(lst))
+        

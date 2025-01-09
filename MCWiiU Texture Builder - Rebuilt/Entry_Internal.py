@@ -16,7 +16,8 @@ selections = {
         "get textures",
         "separate wiiu textures",
         "check wiiu abstract texures",
-        "check texture equality"
+        "check texture equality",
+        "generate MTLocs"
     ],
     "games": [
         "java",
@@ -180,5 +181,7 @@ match (selectedMain):
         doUseBase = (selection("derivedVersion")[0] == 0)
         doGeneration = (selection("generateDifferenceTextures")[0] == 1) # option 1 would be "images only"
         Internal.checkTextureEquality(game, version, type, keyword, doUseBase, doGeneration)
+    case "generate MTLocs":
+        Internal.generateMTLocs()
     case _:
         print("You did something wrong, please try again")
