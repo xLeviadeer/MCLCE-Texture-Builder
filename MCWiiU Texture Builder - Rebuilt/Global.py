@@ -58,6 +58,9 @@ def endProgram(message:str=None): # ends the program
     else:
         bar.close(message)
 
+# the name of the type which contains miscellaneous textures. This controls which type will read from a base directory instead of a subdirectory
+misc = "misc"
+
 # a list of notExpected errors
 notExpectedErrors = []
 

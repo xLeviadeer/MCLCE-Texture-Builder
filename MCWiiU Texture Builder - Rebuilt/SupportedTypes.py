@@ -4,6 +4,8 @@ supportedTypes = {
         "item",
         "particle",
         "entity",
+        "environment",
+        "misc"
     ],
     "bedrock": [
         "blocks",

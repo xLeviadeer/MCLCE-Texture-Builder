@@ -1,0 +1,10 @@
+{
+    "Abstract": {
+        "clouds": ["base", "122", "environment\\clouds"],
+        "tunnel": ["base", "title", "misc\\tunnel"],
+        "moon_phases": ["base", "122", "terrain\\moon_phases"],
+        "sun": ["base", "122", "terrain\\sun"],
+        "rain": ["base", "122", "environment\\rain"],
+        "snow": ["base", "122", "environment\\snow"]
+    }
+}

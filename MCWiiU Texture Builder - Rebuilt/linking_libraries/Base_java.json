@@ -1084,5 +1084,40 @@
         "trident": "trident",
         "trident_riptide": "trident_riptide",
         "particlefield": "end_portal"
+    },
+    "environment_abstract": {
+        "clouds": "clouds",
+        "tunnel": "end_sky",
+        "moon_phases": "moon_phases",
+        "sun": "sun",
+        "rain": "rain",
+        "snow": "snow"
+    },
+    "misc_abstract": {
+        "foliagecolor": "colormap\\foliage",
+        "grasscolor": "colormap\\grass",
+        "particlefield": "entity\\end_portal",
+        "mapbg": "map\\map_background",
+        "mapicons": true,
+        "additionalmapicons": true,
+        "glint": "misc\\enchanted_item_glint",
+        "beacon_beam": "entity\\beacon_beam",
+        "pumpkinblur": "misc\\pumpkinblur",
+        "shadow": "misc\\shadow",
+        "chain_1": "models\\armor\\chainmail_layer_1",
+        "chain_2": "models\\armor\\chainmail_layer_2",
+        "diamond_1": "models\\armor\\diamond_layer_1",
+        "diamond_2": "models\\armor\\diamond_layer_2",
+        "gold_1": "models\\armor\\gold_layer_1",
+        "gold_2": "models\\armor\\gold_layer_2",
+        "iron_1": "models\\armor\\iron_layer_1",
+        "iron_2": "models\\armor\\iron_layer_2",
+        "cloth_1": "models\\armor\\leather_layer_1",
+        "cloth_1_b": "models\\armor\\leather_layer_1_overlay",
+        "cloth_2": "models\\armor\\leather_layer_2",
+        "cloth_2_b": "models\\armor\\leather_layer_2_overlay",
+        "turtle_1": "models\\armor\\turtle_layer_1",
+        "power": "entity\\creeper\\creeper_armor",
+        "kz": "painting\\paintings_kristoffer_zetterstrand"
     }
 }
