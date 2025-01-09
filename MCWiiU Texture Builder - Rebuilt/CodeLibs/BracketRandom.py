@@ -36,6 +36,9 @@ class Random():
             
             print("SETTING UP CLASS", log.DEBUGBRACKETRANDOM)
 
+            # self executed default
+            self.__selfExecuted = False
+
             # set value for __min
             if isinstance(__min, int):
                 self.__min = __min
@@ -113,6 +116,12 @@ class Random():
             else:
                 raise TypeError(f"could not create class Random based on provided value for clsOrUsedNums of (incorrect) type {type(clsOrUsedNums)}")
 
+    def _alreadyUsedInBracket(self, num):
+        for index, value in self.__brackets.items():
+            if (index <= num) and (num <= (index + value - 1)):
+                return True
+        return False
+
     def addUsedValues(self, usedValues:Union[int, tuple]):
         """
         Description:
@@ -124,6 +133,7 @@ class Random():
         """
         
         print("ADDING USED VALUES", log.DEBUGBRACKETRANDOM)
+        print(f"bracket before: {self.__brackets}", log.DEBUGBRACKETRANDOM, 1)
 
         # turn int into tuple for processing
         if isinstance(usedValues, int):
@@ -136,8 +146,8 @@ class Random():
                 raise TypeError(f"the provided value (of type {type(num)}) {num} is not an int")
             if (num < self.__min) or (num > self.__max):
                 raise ValueError(f"the provided value {num} is not in range (above or below the __min or __max)")
-            for index, value in self.__brackets.items():
-                if (index <= num) and (num <= (index + value - 1)):
+            if (self.__selfExecuted == False):
+                if self._alreadyUsedInBracket(num):
                     raise RandomAlreadyUsedExeption(f"the provided value ({num}) has already been used")
             
             # update amount used
@@ -187,6 +197,7 @@ class Random():
         # sort dictionary after additions
         self.__brackets = dict(sorted(self.__brackets.items()))
         # no return because brackets is directly updated
+        print(f"bracket after: {self.__brackets}", log.DEBUGBRACKETRANDOM, 1)
 
     def getRandom(self):
         """
@@ -219,22 +230,47 @@ class Random():
                 break
             print(f"running for {index}: {value}", log.DEBUGBRACKETRANDOM)
 
-            # find the overflow amount
-            overflowOffset = availableValue - index 
-            print(f"overflow of {overflowOffset}", log.DEBUGBRACKETRANDOM, 1)
-
-            # account for the current elements offset and also apply overflow offset
-            availableValue = index + value + overflowOffset 
+            # offset the value based on the current bracket
+            availableValue += value
             print(f"curr prospective of {availableValue}", log.DEBUGBRACKETRANDOM, 1)
-        
+
             # break if not in brackets dict (dont continue offsetting)
-            if (availableValue not in self.__brackets):
+            if not self._alreadyUsedInBracket(availableValue):
                 break
 
-        # update used and brackets with the found number
+        # update used and brackets with the found number (disables the double-check of alreadyUsedInBracket temporarily)
         print(f"selected final available value of {availableValue}", log.DEBUGBRACKETRANDOM)
+        self.__selfExecuted = True
         self.addUsedValues(availableValue)
+        self.__selfExecuted = False
 
         # return
         return availableValue
     
+    def fill(self, length:int=None):
+        """
+        Description
+            returns a list filled with the remaining and non repeating values
+        ---
+        Arguments:
+            - length : Integer <None>
+                - None: creates a list of size of all remaining values
+                - Integer: creates a list of the provided length; length must be less than the amount of remaining values
+        ---
+        Returns:
+            - list filled with non repeating values in random order
+        """
+
+        # remaining
+        amountOfRemainingValues = ((self.__max - self.__min) - self.amountUsed) + 1
+
+        # logic for length
+        if not isinstance(length, int) and (length != None):
+            raise ValueError("provided 'length' value was not an int")
+        amountToGenerate = amountOfRemainingValues if (length == None) else length
+
+        # generate fill list
+        lst = []
+        for _ in range(amountToGenerate):
+            lst.append(self.getRandom())
+        return lst
