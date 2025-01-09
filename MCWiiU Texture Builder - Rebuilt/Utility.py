@@ -1,5 +1,8 @@
 from builtins import type as typeof
 from SizingImage import SizingImage as Image
+from typing import Union
+from CodeLibs.Path import Path
+from Read import readImageSingular
 import SizingImage as si
 import Global
 import Global
@@ -262,7 +265,7 @@ def getImageNoOpacity(image, *, doZeroDetection=False):
         Takes the input image and returns it with no opacity
     ---
     Arguments:
-        - Image : Image <>
+        - image : Image <>
         - doZeroDetection : Boolean <False>
             - determines whether invisible pixels are used when determining the texture
             - using this will mean all invisible pixels are turned to white, but this also means all pixels will be accounted for, even completely invisible ones
@@ -314,6 +317,7 @@ def forEveryPixel(image: Image, function, useExistingImage: bool=False, imageCon
                 - "x" : Integer
                 - "y" : Integer 
                 - "image" : Image
+                - "args" : Tuple
             - Returns:
                 - Tuple
         - useExistingImage : Boolean <False>
@@ -341,3 +345,195 @@ def forEveryPixel(image: Image, function, useExistingImage: bool=False, imageCon
         i += 1
 
     return newImage
+
+def tupleIsPosition(tup:tuple) -> bool:
+    """
+    Description:
+        Verifies that a tuple is a position (length of 2, all ints)
+    ---
+    Arguments:
+        - tup : Tuple <>
+    ---
+    Returns:
+        - Boolean, true if correctly formatted
+    """
+    if (not isinstance(tup, tuple)): # provided tup value isn't a tuple
+        return False
+    if (len(tup) != 2) or any(not isinstance(value, int) for value in tup): # provided tuple isn't correctly formatted
+        return False
+    return True
+
+class SheetExtractor():
+    def __init__(self, 
+                imagePathOrSize:Union[Image, Path, tuple[int, int]],
+                subImageSize:tuple,
+                wiiuName:str=None,
+                type:str=None,
+                expectedSize:tuple=None,
+                doVersionPatches:bool=True,
+                doPrint:bool=False,
+                dox16Handling:bool=True):
+        """
+        Description:
+            Creates a class holding an image in sheet format which can be used to non-destructively extract sub-images from
+        ---
+        Arguments:
+            - imagePathOrSize : Image, Path or Tuple <>
+                - an Image, Path or tuple of ints length 2 variable which the sheet originates from or determines the size of the image
+            - subImageSize : Tuple <>
+                - must be a tuple of length 2
+                - determines the size of sub-images on the sheet
+                - is NOT required to be exactly sized to the sheet (sub-images can be cut off at the edges)
+            - wiiuName : String <>
+            - pathExtension : String <>
+                - Path string that extends onto <type>
+            - type : String <>
+            - expectedSize : Tuple <>
+                - Tuple with length of 2
+            - doVersionPatches : Boolean <True>
+                - Determines whether version patches should be done
+            - doPrint : Boolean <False>
+                - Debug variable for printing the full path
+        """        
+        # verify or try to read image
+        image = None
+        if tupleIsPosition(imagePathOrSize): # size tuple
+            image = blankImage(imagePathOrSize)
+        elif isinstance(imagePathOrSize, Path): # path
+            if any(value is None for value in (wiiuName, type, expectedSize)): 
+                Global.endProgram("attempting to read image from path (in SheetExtrator) but required parameters have not been set for reading")
+            image = readImageSingular(wiiuName, imagePathOrSize.getPath(), type, expectedSize, doVersionPatches=doVersionPatches, doPrint=doPrint, dox16Handling=dox16Handling)
+        elif isinstance(imagePathOrSize, Image): # image
+            image = imagePathOrSize
+        else: 
+            Global.endProgram("the provided imageOrPath was not an image or a path")
+        self.sheet = image
+
+        # check formatting of subImageSize
+        if (not tupleIsPosition(subImageSize)):
+            Global.endProgram("subImageSize (of SheetExtractor) isn't a tuple of the correct format")
+        self.sizeX = subImageSize[0]
+        self.sizeY = subImageSize[1]        
+
+    def _tuplePositionCheck(self, pos) -> None:
+        if (not tupleIsPosition(pos)):
+            Global.endProgram("provided value isn't a tuple of the correct format")
+
+    def _intCheck(self, value) -> None:
+        if (not isinstance(value, int)):
+            Global.endProgram("the provided value isn't an int")
+
+    def getPixelXOf(self, x:int) -> int:
+        """
+        Description:
+            gets the pixel position based on assuming the provided value is an x value
+        ---
+        Arguments:
+            - x : int <>
+        ---
+        Returns:
+            - integer, pixel position
+        """
+        self._intCheck(x)
+        return self.sizeX * x
+    
+    def getPixelYOf(self, y:int) -> int:
+        """
+        Description:
+            gets the pixel position based on assuming the provided value is a y value
+        ---
+        Arguments:
+            - y : int <>
+        ---
+        Returns:
+            - integer, pixel position
+        """
+        self._intCheck(y)
+        return self.sizeY * y
+
+    def getPixelPositionOf(self, pos:tuple) -> tuple[int, int]:
+        """
+        Description:
+            gets the pixel position of the provided sheet position
+        ---
+        Arguments:
+            - pos : Tuple <>
+                - must be a position tuple (length 2, ints only)
+        ---
+        Returns
+            - Tuple of form (int, int)
+        """
+        self._tuplePositionCheck(pos)
+        return (self.getPixelXOf(pos[0]), self.getPixelYOf(pos[1]))
+
+    def extract(self, pos:tuple) -> Image:
+        """
+        Description:
+            Extracts an image out of the sheet from the given position
+        ---
+        Arugments:
+            - pos : Tuple <>
+                - must be a position tuple (length 2, ints only)
+        ---
+        Returns:
+            - Image
+        """
+        # check pos format and get positions
+        pixelPos = self.getPixelPositionOf(pos)
+
+        # check if position is inside of the sheet
+        if (pixelPos > self.sheet.size):
+            raise ValueError("provided pos results in a pixel position outside of the image sheet")
+
+        # define crop outer edge
+        cropEdge = [(pixelPos[0] + self.sizeX), (pixelPos[1] + self.sizeY)]
+        # check if the crop is inside of the sheet and crop down
+        if (cropEdge[0] > self.sheet.width): cropEdge[0] = self.sheet.width
+        if (cropEdge[1] > self.sheet.height): cropEdge[1] = self.sheet.height
+        # define crop box
+        cropBox = pixelPos + tuple(cropEdge)
+
+        # crop and return image
+        return self.sheet.crop(cropBox)
+
+    def insert(self, pos:tuple, image:Image, isDestructive:bool=True) -> Union[None, Image]:
+        """
+        Description:
+            Inserts an image onto the sheet at the given position
+        ---
+        Arugments:
+            - pos : Tuple <>
+                - must be a position tuple (length 2, ints only)
+            - image : Image <>
+            - isDestructive : Bool <False>
+                - True: returns none and inserts the image onto the stored sheet
+                - False: returns the new image instead of inserting on the stored sheet
+        """
+        # check pos format and get positions
+        pixelPos = self.getPixelPositionOf(pos)
+
+        # check if position is inside of the sheet
+        if (pixelPos > self.sheet.size):
+            raise ValueError("provided pos results in a pixel position outside of the image sheet")
+        
+        # check if the image is an image
+        if (not isinstance(image, Image)):
+            Global.endProgram("image value was not an Image")
+
+        # insertion based on destructive status
+        if (isDestructive == True):
+            self.sheet.paste(image, pixelPos)
+        else:
+            sheet = self.sheet.copy()
+            sheet.paste(image, pixelPos)
+            return sheet
+
+    def getSheet(self) -> Image:
+        """
+        Description:
+            Returns the sheet image
+        ---
+        Returns:
+            - Image, sheet image
+        """
+        return self.sheet
