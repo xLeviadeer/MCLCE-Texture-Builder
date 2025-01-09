@@ -115,7 +115,7 @@ class _WriteLocation():
     def translate(self, value):
         match (value):
             case "main":
-                return None
+                return Path()
             case "122":
                 return Path("1_2_2")
             case "title":
@@ -232,10 +232,8 @@ class Writer():
             Sets up a module to write files in different console structures
         ---
         Arguments:
-            - console : String <>
-                - wiiu
             - mode : String <>
-                - write: writes files to the specific location
+                - build: writes files to the specific location
                 - dump: dumps all files into typed folders
             - defaultPrepension : Path <>
                 - A default path that will always be prepended to all writes
@@ -244,20 +242,22 @@ class Writer():
         self.isDumpMode = (SpecialString("dump", "build").check(mode) == "dump")
         self.defaultPrepension = defaultPrepension
 
-    def writeImage(self, image:Image, location:_WriteLocation, currType:str, doDelete:bool=False):
+    def generatePath(self, location:_WriteLocation, currType:str) -> Path:
         """
         Description:
-            Writes images to their specified location and handles all related errors
+            generates a file path leading the specified location
         ---
         Arguments:
             - image : Image <>
             - location : WriteLocation <>
                 - WiiULocation
                 - ModPackLocation
-            - doDelete : Boolean <False>
-                - Whether to delete or write the files
+            - currType : str <>
+                - the current wiiu type
+        ---
+        Returns:
+            - Path (not str), leading the correct location 
         """
-
         # builds a path 
         #   accounts for build/dump mode
         path = None
@@ -269,7 +269,27 @@ class Writer():
         else: # is dump, just use prepension
             # set path
             path = Path(self.defaultPrepension.getPath(withFirstSlash=False), currType, location.getSaveName())
-        
+        return path
+
+    def writeImage(self, image:Image, location:_WriteLocation, currType:str, doDelete:bool=False):
+        """
+        Description:
+            Writes images to their specified location and handles all related errors
+        ---
+        Arguments:
+            - image : Image <>
+            - location : WriteLocation <>
+                - WiiULocation
+                - ModPackLocation
+            - currType : str <>
+                - the current wiiu type
+            - doDelete : Boolean <False>
+                - Whether to delete or write the files
+        """
+
+        # generate the path
+        path = self.generatePath(location, currType)
+        # formalize path into no-name and name version
         path.formalize()
         pathNoName = path.slice(0, (path.getLength() - 1)).getPath(withFirstSlash=False)
         path = f"{path.getPath(withFirstSlash=False)}.png"
@@ -287,3 +307,4 @@ class Writer():
         else: # delete
             if (os.path.exists(path)): # check if exists before removing
                 os.remove(path)
+              
