@@ -170,6 +170,12 @@ def translateForAllTypes():
             ut.changeSingularSize(8)
         else:
             ut.changeSingularSize(16)
+
+        # set base directory reads
+        readFromBaseDirectory = False
+        if (type == Global.misc):
+            # there is no support for misc sheets or overrides because the idea of a misc sheet or override doesn't make any sense
+            readFromBaseDirectory = True
         
         # type dependant variables
         wiiuArr = rd.readWiiuLibFor(wiiuType, "Arr")
@@ -317,8 +323,13 @@ def translateForAllTypes():
                         print(f"using wiiu texture: {wiiuName}", log.LOG)
                         # if wiiu texture is used, then any textures found is false
                     else:
+                        path = None
+                        if (readFromBaseDirectory == True): # base directory path
+                            path = Global.inputPath + "\\" + linkName
+                        else: # normal path
+                            path = Global.inputPath + "\\" + type + "\\" + linkName
                         linkImage = rd.readImage(
-                            Global.inputPath + "\\" + type + "\\" + linkName, 
+                            path, 
                             type, 
                             wiiuName, 
                             si.deconvertInt(wiiuImage.height), 
@@ -376,8 +387,7 @@ def translateForAllTypes():
                 
         # no found textures error
         if (anyTexturesFound == False):
-            print("no textures could be found using this file directory\nIt *is* a valid directory, but no textures could be located inside of it", log.EXIT)
-            # already exits since it's the last thing to happen
+            Global.endProgram("no textures could be found using this file directory\nIt *is* a valid directory, but no textures could be located inside of it")
     print("build completed successfully", log.NOTE)
 
 def generateWiiuTextures():
