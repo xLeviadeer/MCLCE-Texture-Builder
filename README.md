@@ -7,7 +7,7 @@ Planned items are planned to be developed, whereas non-planned items may not be 
     - [x] support for all java textures
     - [ ] support for different versions of all java textures
     - [x] support for all bedrock textures
-    - [ ] support for different versions of all bedrock textures
+    - [x] support for different versions of all bedrock textures
 - [ ] support for all textures being animated
 - [ ] option to use and generate for xBR upscaling
 - [ ] (support) support to write to multiple console formats
