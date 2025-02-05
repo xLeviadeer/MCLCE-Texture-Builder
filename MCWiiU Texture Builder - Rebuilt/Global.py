@@ -46,6 +46,9 @@ outputDrive = None # usb or sys
 
 # --- RESOURCES ----
 
+# iter value for debugging by using some kind of global number for tracking
+iter = 0
+
 # name of the currentlty running thread
 name = None
 

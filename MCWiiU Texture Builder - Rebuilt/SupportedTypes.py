@@ -11,7 +11,9 @@ supportedTypes = {
         "blocks",
         "items",
         "particle",
-        "entity"
+        "entity",
+        "environment",
+        "misc"
     ]
 }
 

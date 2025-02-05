@@ -983,5 +983,40 @@
         "trident": "trident",
         "trident_riptide": "trident_riptide",
         "particlefield": "end_portal"
+    },
+    "environment_abstract": {
+        "clouds": "clouds",
+        "tunnel": true,
+        "moon_phases": "moon_phases",
+        "sun": "sun",
+        "rain": true,
+        "snow": true
+    },
+    "misc_abstract": {
+        "foliagecolor": "colormap\\foliage",
+        "grasscolor": "colormap\\grass",
+        "particlefield": "entity\\end_portal",
+        "mapbg": "map\\map_background",
+        "mapicons": "map\\map_icons",
+        "additionalmapicons": false,
+        "glint": true,
+        "beacon_beam": "entity\\beacon_beam",
+        "pumpkinblur": "misc\\pumpkinblur",
+        "shadow": false,
+        "chain_1": "models\\armor\\chain_1",
+        "chain_2": "models\\armor\\chain_2",
+        "diamond_1": "models\\armor\\diamond_1",
+        "diamond_2": "models\\armor\\diamond_2",
+        "gold_1": "models\\armor\\gold_1",
+        "gold_2": "models\\armor\\gold_2",
+        "iron_1": "models\\armor\\iron_1",
+        "iron_2": "models\\armor\\iron_2",
+        "cloth_1": true,
+        "cloth_1_b": true,
+        "cloth_2": true,
+        "cloth_2_b": true,
+        "turtle_1": "models\\armor\\turtle_1",
+        "power": "entity\\creeper\\creeper_armor",
+        "kz": "painting\\kz"
     }
 }

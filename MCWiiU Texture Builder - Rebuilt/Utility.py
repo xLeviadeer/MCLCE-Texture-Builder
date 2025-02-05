@@ -19,6 +19,14 @@ mobsize = (mobside, mobside)
 
 # --- library of utility functions ---
 
+def test(func):
+    """
+    Decorator for marking functions as test functions not to be used in a final result
+    """
+    
+    func.is_test = True
+    return func
+
 def blankImage(size=singularSizeOnTexSheet, height=None, color=(0, 0, 0, 0), doResize=True):
     """
     Description:
@@ -124,8 +132,10 @@ def compareVersions(versionA:str, versionB:str, direction:bool=None, inclusive:b
     j = 0
     versions = [versionA, versionB]
     while (j < len(versions)):
-        # check for string/int list
-        if isinstance(versions[j], list): # cast to int
+        # check for string/int list tuple
+        if (isinstance(versions[j], tuple)):
+            versions[j] = castItemsToInt(list(versions[j]))
+        elif isinstance(versions[j], list): # cast to int
             versions[j] = castItemsToInt(versions[j])
         # check for string
         elif isinstance(versions[j], str): # create list and cast to int
@@ -239,7 +249,7 @@ def getOpacityTexture(image, getOpacityPortion, *, levelOfDetection = 10, doZero
     Returns:
         - Image
     """
-    finalImage = blankImage(image.size)
+    finalImage = blankImage(image.size, doResize=False)
 
     i = 0
     while (i < image.width):
@@ -302,7 +312,7 @@ def getWiiuNameFromAbstract(locAddon):
     wiiuNameKey = str.split(locAddon, "\\")
     return wiiuNameKey[len(wiiuNameKey) - 1]
 
-def forEveryPixel(image: Image, function, useExistingImage: bool=False, imageConversionMode: str="RGBA", arguments: tuple=None) -> Image:
+def forEveryPixel(image, function, useExistingImage: bool=False, imageConversionMode: str="RGBA", arguments: tuple=None):
     """
     Description:
         Do a certain function for every pixel in an image
@@ -319,7 +329,8 @@ def forEveryPixel(image: Image, function, useExistingImage: bool=False, imageCon
                 - "image" : Image
                 - "args" : Tuple
             - Returns:
-                - Tuple
+                - Tuple, pixel to set to image
+                - None, do not set pixel
         - useExistingImage : Boolean <False>
             - True: pastes changes onto a copy of the exisitng image
             - False: pastes changes onto an empty image
@@ -339,7 +350,9 @@ def forEveryPixel(image: Image, function, useExistingImage: bool=False, imageCon
         j = 0
         while (j < image.height):
             currPixel = image.getpixel((i, j))
-            newImage.putpixel((i, j), function(currPixel, i, j, image, arguments))
+            newPixel = function(currPixel, i, j, image, arguments)
+            if (newPixel != None): # determines whether to set pixel or not
+                newImage.putpixel((i, j), newPixel)
 
             j += 1
         i += 1
@@ -362,178 +375,3 @@ def tupleIsPosition(tup:tuple) -> bool:
     if (len(tup) != 2) or any(not isinstance(value, int) for value in tup): # provided tuple isn't correctly formatted
         return False
     return True
-
-class SheetExtractor():
-    def __init__(self, 
-                imagePathOrSize:Union[Image, Path, tuple[int, int]],
-                subImageSize:tuple,
-                wiiuName:str=None,
-                type:str=None,
-                expectedSize:tuple=None,
-                doVersionPatches:bool=True,
-                doPrint:bool=False,
-                dox16Handling:bool=True):
-        """
-        Description:
-            Creates a class holding an image in sheet format which can be used to non-destructively extract sub-images from
-        ---
-        Arguments:
-            - imagePathOrSize : Image, Path or Tuple <>
-                - an Image, Path or tuple of ints length 2 variable which the sheet originates from or determines the size of the image
-            - subImageSize : Tuple <>
-                - must be a tuple of length 2
-                - determines the size of sub-images on the sheet
-                - is NOT required to be exactly sized to the sheet (sub-images can be cut off at the edges)
-            - wiiuName : String <>
-            - pathExtension : String <>
-                - Path string that extends onto <type>
-            - type : String <>
-            - expectedSize : Tuple <>
-                - Tuple with length of 2
-            - doVersionPatches : Boolean <True>
-                - Determines whether version patches should be done
-            - doPrint : Boolean <False>
-                - Debug variable for printing the full path
-        """        
-        # verify or try to read image
-        image = None
-        if tupleIsPosition(imagePathOrSize): # size tuple
-            image = blankImage(imagePathOrSize)
-        elif isinstance(imagePathOrSize, Path): # path
-            if any(value is None for value in (wiiuName, type, expectedSize)): 
-                Global.endProgram("attempting to read image from path (in SheetExtrator) but required parameters have not been set for reading")
-            image = readImageSingular(wiiuName, imagePathOrSize.getPath(), type, expectedSize, doVersionPatches=doVersionPatches, doPrint=doPrint, dox16Handling=dox16Handling)
-        elif isinstance(imagePathOrSize, Image): # image
-            image = imagePathOrSize
-        else: 
-            Global.endProgram("the provided imageOrPath was not an image or a path")
-        self.sheet = image
-
-        # check formatting of subImageSize
-        if (not tupleIsPosition(subImageSize)):
-            Global.endProgram("subImageSize (of SheetExtractor) isn't a tuple of the correct format")
-        self.sizeX = subImageSize[0]
-        self.sizeY = subImageSize[1]        
-
-    def _tuplePositionCheck(self, pos) -> None:
-        if (not tupleIsPosition(pos)):
-            Global.endProgram("provided value isn't a tuple of the correct format")
-
-    def _intCheck(self, value) -> None:
-        if (not isinstance(value, int)):
-            Global.endProgram("the provided value isn't an int")
-
-    def getPixelXOf(self, x:int) -> int:
-        """
-        Description:
-            gets the pixel position based on assuming the provided value is an x value
-        ---
-        Arguments:
-            - x : int <>
-        ---
-        Returns:
-            - integer, pixel position
-        """
-        self._intCheck(x)
-        return self.sizeX * x
-    
-    def getPixelYOf(self, y:int) -> int:
-        """
-        Description:
-            gets the pixel position based on assuming the provided value is a y value
-        ---
-        Arguments:
-            - y : int <>
-        ---
-        Returns:
-            - integer, pixel position
-        """
-        self._intCheck(y)
-        return self.sizeY * y
-
-    def getPixelPositionOf(self, pos:tuple) -> tuple[int, int]:
-        """
-        Description:
-            gets the pixel position of the provided sheet position
-        ---
-        Arguments:
-            - pos : Tuple <>
-                - must be a position tuple (length 2, ints only)
-        ---
-        Returns
-            - Tuple of form (int, int)
-        """
-        self._tuplePositionCheck(pos)
-        return (self.getPixelXOf(pos[0]), self.getPixelYOf(pos[1]))
-
-    def extract(self, pos:tuple) -> Image:
-        """
-        Description:
-            Extracts an image out of the sheet from the given position
-        ---
-        Arugments:
-            - pos : Tuple <>
-                - must be a position tuple (length 2, ints only)
-        ---
-        Returns:
-            - Image
-        """
-        # check pos format and get positions
-        pixelPos = self.getPixelPositionOf(pos)
-
-        # check if position is inside of the sheet
-        if (pixelPos > self.sheet.size):
-            raise ValueError("provided pos results in a pixel position outside of the image sheet")
-
-        # define crop outer edge
-        cropEdge = [(pixelPos[0] + self.sizeX), (pixelPos[1] + self.sizeY)]
-        # check if the crop is inside of the sheet and crop down
-        if (cropEdge[0] > self.sheet.width): cropEdge[0] = self.sheet.width
-        if (cropEdge[1] > self.sheet.height): cropEdge[1] = self.sheet.height
-        # define crop box
-        cropBox = pixelPos + tuple(cropEdge)
-
-        # crop and return image
-        return self.sheet.crop(cropBox)
-
-    def insert(self, pos:tuple, image:Image, isDestructive:bool=True) -> Union[None, Image]:
-        """
-        Description:
-            Inserts an image onto the sheet at the given position
-        ---
-        Arugments:
-            - pos : Tuple <>
-                - must be a position tuple (length 2, ints only)
-            - image : Image <>
-            - isDestructive : Bool <False>
-                - True: returns none and inserts the image onto the stored sheet
-                - False: returns the new image instead of inserting on the stored sheet
-        """
-        # check pos format and get positions
-        pixelPos = self.getPixelPositionOf(pos)
-
-        # check if position is inside of the sheet
-        if (pixelPos > self.sheet.size):
-            raise ValueError("provided pos results in a pixel position outside of the image sheet")
-        
-        # check if the image is an image
-        if (not isinstance(image, Image)):
-            Global.endProgram("image value was not an Image")
-
-        # insertion based on destructive status
-        if (isDestructive == True):
-            self.sheet.paste(image, pixelPos)
-        else:
-            sheet = self.sheet.copy()
-            sheet.paste(image, pixelPos)
-            return sheet
-
-    def getSheet(self) -> Image:
-        """
-        Description:
-            Returns the sheet image
-        ---
-        Returns:
-            - Image, sheet image
-        """
-        return self.sheet
