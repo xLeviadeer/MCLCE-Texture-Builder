@@ -694,7 +694,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
                     if (checkIfOrAll(keyword, wiiuName)): # checks for keyword match
                         wiiuImage = readWiiuImage(game, False, wiiuName)
                         Global.inputPath = path.getPathAppendTemp(f"{version}_{game}") # needs to be set so that override can read
-                        linkImage = runFunctionFromPath("override", wiiuOverride, wiiuName, type, wiiuImage)
+                        linkImage = runFunctionFromPath("override", wiiuOverride, "particles", type, wiiuImage)
                         if (linkImage != False): # only if an image was found
                             doSheetProcessing = False # skips sheet processing
 

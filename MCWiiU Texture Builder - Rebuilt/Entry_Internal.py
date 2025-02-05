@@ -38,7 +38,9 @@ selections = {
         "block",
         "item",
         "particle",
-        "entity"
+        "entity",
+        "environment",
+        "misc"
     ],
     "colorSigModes": [
         "dynamic",
