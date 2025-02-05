@@ -50,7 +50,9 @@ class LoggerMode(Enum):
     # specials
     CUSTOMFUNCTION = _LoggerValue(False, "  *", isIndentable=True, isCustom=True)
     CUSTOMFUNCTIONRECURSION = _LoggerValue(False, "  * (", ")", isIndentable=True, isCustom=True)
+    CUSTOMFUNCTIONTIMING = _LoggerValue(False, "  _*", isIndentable=True, isCustom=True)
     PATCHFUNCTION = _LoggerValue(False, "  *", isIndentable=True, isCustom=True)
+    CUSTOMWEATHER = _LoggerValue(False, "  '", isIndentable=True)
     DEBUGTWO = _LoggerValue(False, "   *", isIndentable=True)
     DEBUGBRACKETRANDOM = _LoggerValue(False, "  '", isIndentable=True)
 
@@ -85,6 +87,10 @@ def print(message: str, mode: LoggerMode=LoggerMode.PLAIN, indent: int=0):
 
         # print
         pyPrint(message)
+
+def isEnabled(mode: LoggerMode):
+    logMode = LoggerMode(mode)
+    return (logMode.value.status == True)
 
 def setStatus(mode: LoggerMode, status: bool):
     """

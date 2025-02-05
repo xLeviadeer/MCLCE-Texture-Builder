@@ -6,7 +6,7 @@ from CodeLibs.Logger import print
 import CustomProcessing
 import importlib
 import Utility as ut
-import Read as rd
+import time
 import SizingImage
 from builtins import type as typeof
 
@@ -117,7 +117,7 @@ def getClass(functionType:str, functionName:str):
     try:
         module = importlib.import_module(f"{checking_module.__name__}.{functionNameUnderscores}") # import the module and create an image with it
     except ImportError:
-        return _closeProgramIfDebugFalse(functionName, f"could not find custom function file \"{functionNameUnderscores}\"")
+        return _closeProgramIfDebugFalse(functionName, f"could not find custom function file \"{functionNameUnderscores}\". There also may be an import error within the custom function file (check your imports)")
 
     # check if the module has the right class name
     if hasattr(module, functionNameUnderscores):
@@ -143,8 +143,20 @@ def _runFunction(cls_instance:Function, isPrintRecursed:bool, *args):
             return cls_instance.createImage(args)
         else: # is not shared
             return cls_instance.createImage()
-        
-    output = generateImage() # try to generate the image
+    
+    # try to generate the image while determing if timing should be used
+    output = None
+    if (log.isEnabled(log.CUSTOMFUNCTIONTIMING) and (isPrintRecursed != None)):
+        startTime = time.perf_counter()
+        output = generateImage()
+        endTime = time.perf_counter()
+        timeToComplete = (endTime - startTime)
+        indentAmount = 0 if (timeToComplete > 0.5) else 3
+        print(f"completed in {timeToComplete:.6f} seconds; function '{functionName}'", log.CUSTOMFUNCTIONTIMING, indentAmount)
+    else:
+        output = generateImage()
+    
+    # check if output was valid
     if (output == None): # if no output was given, meaning the function returned nothing
         return _closeProgramIfDebugFalse(functionName, f"the function for \"{functionName}\" returned None")
     if (isPrintRecursed != None): # none = no print
