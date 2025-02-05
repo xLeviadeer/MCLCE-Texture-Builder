@@ -5,7 +5,9 @@ The MCWiiU Texture Builder is a texture conversion tool to convert textures from
 Planned items are planned to be developed, whereas non-planned items may not be implemented
 - [ ] (planned) support for all types
     - [x] support for all java textures
-    - [ ] support for all bedrock textures
+    - [ ] support for different versions of all java textures
+    - [x] support for all bedrock textures
+    - [ ] support for different versions of all bedrock textures
 - [ ] support for all textures being animated
 - [ ] option to use and generate for xBR upscaling
 - [ ] (support) support to write to multiple console formats
@@ -141,10 +143,14 @@ Stores run-time specific settings data which can be accessed anywhere in the pro
 *internal only*, holds all debug functions
 #### Read.py
 Holds functions for reading databases, images, etc.
+#### Sheet.py
+Sheet extraction class, used for handling (copy, pasting) parts of an image which is a sheet/atlas of multiple textures
 #### SizingImage.py
 Extends/Replaces PIL's Image class to allow upscaling and downscaling of images
 #### SupportedTypes.py
 A list of supported types and supported versions the program will run
+#### Test_BracketRandom.py
+*internal only*, a test file for different implementations of BracketRandom
 #### TextureCreator.py
 Module to create and write textures.
 #### Utility.py
@@ -189,3 +195,5 @@ Libraries of data regarding game textures and how to translate them between vers
 
 # Frontend Information
 The frontend barely works and is pretty much thrown together. It's super unorganized and I can't even remember what exactly it does. It takes input from the users, ensures certain settings can only be selected if other settings are right and then executes a process over the command line to the python_builder Entry_Program.exe to translate textures.
+
+The program continues to be slowly designed moving away from the frontend, where most critical functions are handled in the backend, meaning that anyone can develop their own frontend on top of the backend to make implementation of this program easier.
