@@ -4,13 +4,17 @@ import threading
 import traceback
 import zipfile
 import Global
-import SizingImage
 from CodeLibs import LoadingBar
 from CodeLibs import Logger as log
 from CodeLibs.Logger import print
 from builtins import type as typeof
 from Utility import compareVersions
 from SupportedTypes import supportedVersions
+from typing import Callable
+import subprocess
+from sys import executable
+
+from sys import version_info as PYTHONVERSION
 
 # entry point class to be extended for use as different entry points
 class EntryPoint():
@@ -99,6 +103,77 @@ class EntryPoint():
                 Global.outputStructure = "wiiu"
                 Global.outputDump = "dump"
 
+    def __checkPythonAndPackageVersions(self):
+        # check that python is the correct version
+        pythonRequiredVersion = (3, 12)
+        if not compareVersions((PYTHONVERSION.major, PYTHONVERSION.minor), pythonRequiredVersion):
+            raise RuntimeError(f"This program required Python 3.12; this program cannot run unless python {".".join([str(num) for num in pythonRequiredVersion])} is being used")
+        
+        # overall error msg and tracking
+        errors = []
+        neededPackages = {}
+
+        # errors wrapper
+        class ErrorsWrapper:
+            anyImportErrorsFound = False
+            ERRORMSG = "\n  - This program will allow newer versions of this package, but they may not work properly if significant changes have been made"
+            @classmethod
+            def addError(self, name:str, version:tuple) -> None: 
+                self.anyImportErrorsFound = True
+                neededPackages[name] = version
+                errors.append(f"\n- This program requires '{name}' of version {".".join([str(num) for num in version])}.{self.ERRORMSG}")
+
+        # check the package for if it's installed and if the version is right
+        def checkPackage(importFunction:Callable, name:str, version:tuple) -> None:
+            try:
+                actualVersion = importFunction()
+                # on success
+                if not compareVersions(actualVersion, version, direction=True, inclusive=True):
+                    ErrorsWrapper.addError(name, version)
+            except ImportError:
+                ErrorsWrapper.addError(name, version)
+
+        # ijson check
+        def ijsonImport():
+            from ijson import __version__ as ijsonVersion
+            return ijsonVersion
+        checkPackage(ijsonImport, "ijson", (3, 3, 0))
+        
+        # mergedeep check
+        def mergedeepImport():
+            from mergedeep import __version__ as mergedeepVersion
+            return mergedeepVersion
+        checkPackage(mergedeepImport, "mergedeep", (1, 3, 4))
+
+        # mergedeep check
+        def pilImport():
+            from PIL import __version__ as pilVersion
+            return pilVersion
+        checkPackage(pilImport, "pillow", (11, 0, 0))
+
+        # any errors found
+        if (ErrorsWrapper.anyImportErrorsFound == True):
+            # print errors
+            print(f"The program could not be run giving the following errors:{"".join(errors)}")
+        
+            # prompt user about automatic installation
+            yesOrNoStr = input("would you like to attempt to automatically install the needed packages? [y/n]\n").lower()
+            if (yesOrNoStr == "yes") or (yesOrNoStr == "y"): # yes
+                for name, version in neededPackages.items():
+                    print(f"attempting to install package '{name}'...")
+                    subprocess.check_call([executable, "-m", "pip", "install", f"{name}=={".".join([str(num) for num in version])}"])
+                print("success installing packages, continuing program...")
+                # warning if pillow was installed
+                if ('pillow' in neededPackages.keys()): 
+                    print("\n////////// WARNING //////////\n" + 
+                          "Python PIL (Pillow) has been installed. This *will* cause the program to fail on the first attempt " + 
+                          "to run the program. Please ensure you attempt to run the program twice before continuing further " + 
+                          "package troubleshooting.")
+            elif (yesOrNoStr == "no") or (yesOrNoStr == "n"): # no
+                raise RuntimeError("the program could not continue due to this computer not having the necessary packages.")
+            else: # incorrect format
+                raise ValueError("the input value for y/n was not of the correct format")
+
     # start function will take all of the collected values from init and assign them in the correct order before executing
     def start(self):
         """
@@ -136,13 +211,20 @@ class EntryPoint():
             self._setOutputStructure()
             Global.outputDrive = self.outputDrive
             Global.mainLoc = self.mainLoc
-            SizingImage.changeProcessingSize(self.processingSize)
-
-            # has to be updated after printing is set so print() works
-            Global.updateNotFoundImage()
 
             # multithreading block
             if Global.name == '__main__':
+
+                # check versions
+                self.__checkPythonAndPackageVersions()
+
+                # sizing image can only be imported after the package check
+                import SizingImage
+                SizingImage.changeProcessingSize(self.processingSize)
+
+                # has to be updated after printing is set so print() works
+                # also has to be set after sizing image has been imported
+                Global.updateNotFoundImage()
 
                 # has to be imported down here (to ensure that files are read properly based on Global)
                 import TextureCreator
@@ -282,13 +364,20 @@ class EntryPoint():
             self._setOutputStructure()
             Global.outputDrive = self.outputDrive
             Global.mainLoc = self.mainLoc
-            SizingImage.changeProcessingSize(self.processingSize)
-
-            # has to be updated after printing is set so print() works
-            Global.updateNotFoundImage()
 
             # multithreading block
             if Global.name == '__main__':
+
+                # check versions
+                self.__checkPythonAndPackageVersions()
+
+                # sizing image can only be imported after the package check
+                import SizingImage
+                SizingImage.changeProcessingSize(self.processingSize)
+
+                # has to be updated after printing is set so print() works
+                # also has to be set after sizing image has been imported
+                Global.updateNotFoundImage()
 
                 import TextureCreator # has to be imported down here (to ensure that files are read properly based on uiInput)
 
@@ -337,6 +426,8 @@ class EntryPoint():
         Description:
             simply assigns the values to Global so that the program can continue during testing
         """
+
+        import SizingImage
 
         Global.executedFromC = self.executedFromC
         Global.errorMode = self.errorMode

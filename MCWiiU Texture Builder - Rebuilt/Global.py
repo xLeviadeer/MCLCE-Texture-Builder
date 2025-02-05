@@ -5,7 +5,12 @@ from CodeLibs import Logger as log
 from CodeLibs.Logger import print
 import os
 from sys import exit
-from SizingImage import SizingImage as Image
+
+# try to import Image, but if not continue running without image
+try:
+    from SizingImage import SizingImage as Image
+except ModuleNotFoundError:
+    pass # this will cause the program to fail later, but only runs when installing Pillow
 
 # --- GENERAL SETTINGS ---
 

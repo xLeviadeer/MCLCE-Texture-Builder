@@ -1,14 +1,16 @@
 from builtins import type as typeof
-from SizingImage import SizingImage as Image
-from typing import Union
-from CodeLibs.Path import Path
-from Read import readImageSingular
-import SizingImage as si
 import Global
 import Global
 from CodeLibs import Logger as log
 from CodeLibs.Logger import print
 import re
+
+# try to import image
+try:
+    from SizingImage import SizingImage as Image
+    import SizingImage as si
+except ModuleNotFoundError:
+    pass # this will cause the program to fail later, but only runs when installing Pillow
 
 # --- utility variables --- 
 
