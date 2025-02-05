@@ -207,7 +207,26 @@
                 "armorstand",
                 "cart",
                 "sign",
-                "spectral_arrow"
+                "spectral_arrow",
+                "vex",
+                "vex_charging",
+                "zombie_villager",
+                "dragon",
+                "villager",
+                "chest",
+                "christmas",
+                "enderchest",
+                "trapped"
+            ],
+            "environment": [
+                "clouds"
+            ],
+            "misc": [
+                "diamond_1",
+                "diamond_2",
+                "gold_1",
+                "gold_2",
+                "cloth_1_b"
             ]
         }
     },
@@ -428,6 +447,13 @@
                 "witch",
                 "armorstand",
                 "sign"
+            ],
+            "misc": [
+                "diamond_1",
+                "diamond_2",
+                "gold_1",
+                "gold_2",
+                "kz"
             ]
         }
     }
