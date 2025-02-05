@@ -1,5 +1,6 @@
 from CustomProcessing import Custom
 import Utility as ut
+from Sheet import SheetExtractor
 from CodeLibs.Path import Path
 import Global
 
@@ -15,9 +16,9 @@ class map_icons(Custom.Function):
             Global.endProgram("attempting to run map_icons process without using either mapicons or additionalmapicons")
 
         # read images as sheets
-        linkSheet = ut.SheetExtractor(Path("map_icons"), ut.size(8), self.wiiuName, "map", ut.size(128))
-        wiiuSheet = ut.SheetExtractor(self.wiiuImage, ut.size(16))
-        newSheet = ut.SheetExtractor(ut.size(64), ut.size(16))
+        linkSheet = SheetExtractor(Path("map_icons"), ut.size(8), self.wiiuName, "map", ut.size(128))
+        wiiuSheet = SheetExtractor(self.wiiuImage, ut.size(16))
+        newSheet = SheetExtractor(ut.size(64), ut.size(16))
 
         # tuple of positions
         positions = None

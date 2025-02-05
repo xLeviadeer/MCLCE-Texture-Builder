@@ -2,6 +2,7 @@ from CustomProcessing import Custom
 import SizingImage as si
 from SizingImage import SizingImage as Image
 import Utility as ut
+from Sheet import SheetExtractor
 import Read as rd
 from multiprocessing import Pool
 import Global
