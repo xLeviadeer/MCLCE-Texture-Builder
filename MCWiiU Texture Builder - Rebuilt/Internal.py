@@ -203,7 +203,7 @@ def generateVersionPatches():
 
     # for every version
     path = Global.getMainWorkingLoc() + "\\base_textures"
-    processingLength = len(list(filter(lambda file : file.endswith("_java"), os.listdir(path))))
+    processingLength = len(list(filter(lambda file : file.endswith(f"_{Global.inputGame}"), os.listdir(path))))
     count = 0
     for dir in os.scandir(path): # for every version (with the if) [versions]
         if ((not os.path.isdir(path + "\\" + dir.name)) or (not dir.name.endswith(Global.inputGame))): continue # must end with link name and be directory to continue
@@ -230,12 +230,12 @@ def generateVersionPatches():
                     linkTex = arr[wiiuTex]
                     if (linkTex == True or linkTex == False): continue # has to be string
                     
-                    def checkDirectory(currPath, type, additionalDir = None):
+                    def checkDirectory(currPath, additionalDir = None):
                         path = currPath if (additionalDir == None) else (f"{currPath}\\{additionalDir}") # creates a temporary path value for checking this directory (without actually combining values)
                         for file in os.scandir(path): # [version > type > file names] (and subdirectories)
                             namePath = file.name if (additionalDir == None) else f"{additionalDir}\\{file.name}"
                             if (os.path.isdir(f"{path}\\{file.name}")): # check if the file is a directory
-                                if (checkDirectory(currPath, type, namePath)): # add to additionalDir and recurse (returns true if checkDirectory returns true, if false, do nothing)
+                                if (checkDirectory(currPath, namePath)): # add to additionalDir and recurse (returns true if checkDirectory returns true, if false, do nothing)
                                     return True
                             elif ((namePath == linkTex + ".png") or (namePath == linkTex + ".tga")):
                                 return True
@@ -243,7 +243,7 @@ def generateVersionPatches():
                             return False
 
                     # if it doesn't exist, then add it to version patches
-                    found = checkDirectory((path + "\\" + dir.name + "\\" + type), type)
+                    found = checkDirectory((path + "\\" + dir.name + (f"\\{type}" if (type != Global.misc) else "")))
                     if (found == False):
                         addition = None
 
@@ -736,7 +736,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
 
                             # read (and version patch if needed) linkImage
                             patchPath = path.copy()
-                            patchPath.append(dir.name, type, linkName)
+                            patchPath.append(dir.name, (type if (wiiuType != Global.misc) else None), linkName)
                             patchPath = rd.patchForVersion(patchPath.getPath(), type, wiiuName, doCustomProcessing=False) # turns into a string here
                             if (patchPath == None): cont(); continue # if the path uses custom processing
                             linkImage = rd.getImage(patchPath)
@@ -780,7 +780,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
                             wiiuImage = readWiiuImage(game, True, Path(wiiuType, wiiuFileName).getPath(withFirstSlash=False))
 
                             patchPath = path.copy()
-                            patchPath.append(dir.name, type, linkName)
+                            patchPath.append(dir.name, (type if (wiiuType != Global.misc) else None), linkName)
                             patchPath = rd.patchForVersion(patchPath.getPath(), f"{type}_abstract", wiiuName, doCustomProcessing=False) # turns into a string here
                             if (patchPath == None): cont(); continue # if the path uses custom processing
                             linkImage = rd.getImage(patchPath)
