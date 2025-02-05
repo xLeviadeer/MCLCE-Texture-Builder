@@ -3,6 +3,8 @@ from CodeLibs.Logger import print
 import random
 from typing import Union
 from Utility import test
+from copy import deepcopy
+import warnings
 
 class NoRandomValuesAvailableException(Exception):
     pass
@@ -17,6 +19,8 @@ class Random():
     # __brackets
 
     def __init__(self, min:int=0, max:int=1, clsOrUsedNums=None):
+            warnings.warn("class 'Random' of 'BracketRandomAsList' was tested to be slower than regular BracketRandom and should NOT be used as it serves the same purpose")
+            
             """
             Description:
                 Creates a random class for bracket based randomization using a list of already used values
@@ -65,7 +69,7 @@ class Random():
                     # -- prepare values --
 
                     # set empty brackets and amountUsed value
-                    self.__brackets = {}
+                    self.__brackets = []
                     self.amountUsed = len(clsOrUsedNums)
 
                     # prune unwanted values (diplciates, out of range)
@@ -100,11 +104,11 @@ class Random():
                         else:
                             if (buildValue != 0):
                                 print(f"passed bracket, setting {buildIndex} to value {buildValue + 1}", log.DEBUGBRACKETRANDOM, 1)
-                                self.__brackets[buildIndex] = buildValue + 1 # + 1 to include the initial value, not just length addon
+                                self.__brackets.append([buildIndex, (buildValue + 1)]) # + 1 to include the initial value, not just length addon
                                 buildValue = 0
                             else:
                                 print(f"found standalone index, setting {lastNum} to 1", log.DEBUGBRACKETRANDOM, 1)
-                                self.__brackets[lastNum] = 1
+                                self.__brackets.append([lastNum, 1])
 
                         # increment
                         i += 1
@@ -112,14 +116,55 @@ class Random():
                     # once completed loop
                     if (buildValue != 0): # if the last value was part of an exclusion bracket
                         print(f"final bracket, setting {buildIndex} to value {buildValue}", log.DEBUGBRACKETRANDOM)
-                        self.__brackets[buildIndex] = buildValue + 1 # + 1 to include the initial value, not just length addon
+                        self.__brackets.append([buildIndex, (buildValue + 1)]) # + 1 to include the initial value, not just length addon
                 else:
                     raise TypeError(f"could not create class Random because all values in the ...UsedNums are not ints")
             elif (clsOrUsedNums == None): # if none, blank
                 self.amountUsed = 0
-                self.__brackets = {}
+                self.__brackets = []
             else:
                 raise TypeError(f"could not create class Random based on provided value for clsOrUsedNums of (incorrect) type {type(clsOrUsedNums)}")
+
+    def __getBracketKeys(self):
+        """
+        Description:
+            gets the bracket keys (similar to dictionary keys)
+        ---
+        Returns:
+            - a list containing the keys (in order) of __brackets
+        """
+
+        return [pair[0] for pair in self.__brackets]
+
+    def __getBracketIndexOfKey(self, num:int):
+        """
+        Description:
+            gets the index in __brackets for the provided key
+        ---
+        Arguments:
+            - num : Integer <>
+                - a key, key is assumed to be in the dictionary or will fail
+        ---
+        Returns:
+            - index in __brackets for the provided key
+        """
+
+        # uses binary search to find the value quickly
+
+        # get left and right
+        leftIndex = 0
+        rightIndex = len(self.__brackets) - 1
+
+        # while the left bracket is smaller or equal to right
+        while leftIndex <= rightIndex:
+            midIndex = (leftIndex + rightIndex) // 2 # middle index (floor)
+            if (self.__brackets[midIndex][0] == num): # if the key is equal to the supplied num
+                return midIndex
+            elif (self.__brackets[midIndex][0] < num): # if the key is smaller than the supplied num
+                leftIndex = midIndex + 1
+            else: # if the key is bigger than the supplied num
+                rightIndex = midIndex - 1
+        raise ValueError(f"the provided key for num was not in the keys of __brackets ({num})")
 
     def __alreadyUsedInBracket(self, num:int):
         """
@@ -130,7 +175,7 @@ class Random():
             - Boolean, true if in bracket; false if not in bracket
         """
 
-        for index, value in self.__brackets.items():
+        for index, value in self.__brackets:
             if (index <= num) and (num <= (index + value - 1)):
                 return True
         return False
@@ -187,11 +232,12 @@ class Random():
             self.amountUsed += 1
 
             # update brackets
-            bracketsAsItems = list(self.__brackets.items()) # convert brackets to a list of tuples
-            for i in range(len(bracketsAsItems) + 1):
+            for i in range(len(self.__brackets) + 1):
                 # prev, curr and next
-                prevItem = bracketsAsItems[i - 1] if (i != 0) else (self.__min - 3, 2) # use normal except first value is __min - 3 (always ignored)
-                currItem = bracketsAsItems[i] if (i < len(bracketsAsItems)) else (self.__max + 3, 2) # use normal except last value is __max + 3 (always ignored)
+                indexOfPrevItem = i - 1
+                indexOfCurrItem = i
+                prevItem = self.__brackets[indexOfPrevItem] if (i != 0) else (self.__min - 3, 2) # use normal except first value is __min - 3 (always ignored)
+                currItem = self.__brackets[indexOfCurrItem] if (i < len(self.__brackets)) else (self.__max + 3, 2) # use normal except last value is __max + 3 (always ignored)
                 # rename values for easier use
                 prevIndex = prevItem[0]
                 prevValue = prevItem[1]
@@ -209,26 +255,26 @@ class Random():
                 # if prev and next indexes are within a difference of 1
                 if lowerCheck and higherCheck: # merge higher and lower together
                     print("running lower and higher logic", log.DEBUGBRACKETRANDOM, 1)
-                    self.__brackets[prevIndex] = prevValue + nextValue + 1 # grow the lower bracket by the higher bracket value + 1
-                    if (nextIndex in self.__brackets.keys()): # check to make sure its in the dict bc of __max
-                        del self.__brackets[nextIndex] # remove higher bracket
+                    self.__brackets[indexOfPrevItem][1] = prevValue + nextValue + 1 # grow the lower bracket by the higher bracket value + 1
+                    if (nextIndex in self.__getBracketKeys()): # check to make sure its in the dict bc of __max
+                        del self.__brackets[indexOfCurrItem] # remove higher bracket
                 elif lowerCheck: # merge with lower
                     print("running lower logic", log.DEBUGBRACKETRANDOM, 1)
-                    self.__brackets[prevIndex] = prevValue + 1 # grow the lower bracket by 1
+                    self.__brackets[indexOfPrevItem][1] = prevValue + 1 # grow the lower bracket by 1
                 elif higherCheck: # merge with higher
                     print("running higher logic", log.DEBUGBRACKETRANDOM, 1)
-                    self.__brackets[nextIndex - 1] = nextValue + 1 # create a new bracket one below the higher bracket and set it to the higher bracket value + 1
-                    if (nextIndex in self.__brackets.keys()): # check to make sure its in the dict bc of __max
-                        del self.__brackets[nextIndex] # remove the higher bracket
+                    self.__brackets.append([(nextIndex - 1), (nextValue + 1)]) # create a new bracket one below the higher bracket and set it to the higher bracket value + 1
+                    if (nextIndex in self.__getBracketKeys()): # check to make sure its in the dict bc of __max
+                        del self.__brackets[indexOfCurrItem] # remove the higher bracket
                 else: # standalone
                     print("running standalone logic", log.DEBUGBRACKETRANDOM, 1)
-                    self.__brackets[num] = 1 # create a new bracket with value 1
+                    self.__brackets.append([num, 1]) # create a new bracket with value 1
 
                 # break, because we found and applied the value
                 break
 
         # sort dictionary after additions
-        self.__brackets = dict(sorted(self.__brackets.items()))
+        self.__brackets = sorted(self.__brackets, key=lambda x: x[0]) # sort based on the "keys" value
         # no return because brackets is directly updated
         print(f"bracket after: {self.__brackets}", log.DEBUGBRACKETRANDOM, 1)
 
@@ -248,8 +294,8 @@ class Random():
         amountOfAvailableValues = rangeOfValues - self.amountUsed
 
         # if the first bracket is the size of all possible randoms (which means it's the only value)
-        if (self.__min in self.__brackets): # only check if the __min is in the brackets
-            if (self.__brackets[self.__min] == (rangeOfValues + 1)): # +1 to account for the weird stuff you do with 1 (as 0) when creating brackets
+        if (self.__min in self.__getBracketKeys()): # only check if the __min is in the brackets
+            if (self.__brackets[0][1] == (rangeOfValues + 1)): # +1 to account for the weird stuff you do with 1 (as 0) when creating brackets
                 raise NoRandomValuesAvailableException("there are no available random values left; all random values have been exhausted")
 
         # find a random number of the right weight
@@ -258,7 +304,7 @@ class Random():
         # find an available random value
         availableValue = randomValueWithMinOffset
         print(f"selected prospective available value of {availableValue}", log.DEBUGBRACKETRANDOM)
-        for index, value in self.__brackets.items(): # for every element in the dict
+        for index, value in self.__brackets: # for every element in the dict
             if (index > availableValue): # break if the prospective available value is smaller than the first item in brackets
                 break
             print(f"running for {index}: {value}", log.DEBUGBRACKETRANDOM)
@@ -340,7 +386,7 @@ class Random():
         """
 
         lst = []
-        for index, offsetCount in self.__brackets.items():
+        for index, offsetCount in self.__brackets:
             for offset in range(offsetCount):
                 lst.append(index + offset)
         return lst
@@ -361,7 +407,7 @@ class Random():
         copyCls.amountUsed = self.amountUsed
         copyCls.__min = self.__min
         copyCls.__max = self.__max
-        copyCls.__brackets = self.__brackets.copy()
+        copyCls.__brackets = deepcopy(self.__brackets)
         
         # return
         return copyCls
