@@ -349,9 +349,9 @@ def translateForAllTypes():
                     linkImage = Image.new("RGBA", size, "#00000000")
                     toleranceWidth = size[0] + int(size[0] / 8) # 1/8th margin of difference accounted for
                     if (size[1] > toleranceWidth): # if height is greater than width
-                        linkImage = ut.duplicateImageDown(Global.notFoundImage.resize(ut.size(size[0], ut.singularSizeOnTexSheet), doResize=False), size[0], size[1])
+                        linkImage = rd.duplicateImageDown(Global.notFoundImage.resize(ut.size(size[0], ut.singularSizeOnTexSheet), doResize=False), size[0], size[1])
                     elif (toleranceWidth < size[1]): # if width is greater than height
-                        linkImage = ut.duplicateImageRight(Global.notFoundImage.resize(ut.size(ut.singularSizeOnTexSheet, size[1]), doResize=False), size[0], size[1])
+                        linkImage = rd.duplicateImageRight(Global.notFoundImage.resize(ut.size(ut.singularSizeOnTexSheet, size[1]), doResize=False), size[0], size[1])
                     else: # they are equal or within the tolerance range
                         linkImage = Global.notFoundImage.resize(size, doResize=False)
                     Global.notExpectedErrors.append(wiiuName)
