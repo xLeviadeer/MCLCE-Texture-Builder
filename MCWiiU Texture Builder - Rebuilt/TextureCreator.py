@@ -258,7 +258,7 @@ def translateForAllTypes():
                 finalImage = None # scoping
                 try: # run checks on translatedTex
                     if (translatedTex == True): # run an external function
-                        finalImage = CustomProcessing.Custom.runFunctionFromPath("external", currTex, currTex, type, getWiiuImageForCurrTex())
+                        finalImage = CustomProcessing.Custom.runFunctionFromPath("external", CustomProcessing.Custom.formatName(currTex), currTex, type, getWiiuImageForCurrTex())
                         anyTexturesFound = True
                     elif (translatedTex == False): # get wiiu texture
                         print(f"using wiiu texture: {currTex}", log.LOG)
@@ -316,7 +316,7 @@ def translateForAllTypes():
                 try: # run checks on linkLib
                     linkImage = None # scoping
                     if (linkName == True): # run abstract manageImgs
-                        linkImage = CustomProcessing.Custom.runFunctionFromPath("abstract", wiiuName, wiiuName, type, wiiuImage)
+                        linkImage = CustomProcessing.Custom.runFunctionFromPath("abstract", CustomProcessing.Custom.formatName(wiiuName), wiiuName, type, wiiuImage)
                         anyTexturesFound = True
                     elif (linkName == False): # use wiiu texture
                         linkImage = wiiuImage

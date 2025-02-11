@@ -1,6 +1,5 @@
 from CustomProcessing import Custom
 import Utility as ut
-from Sheet import SheetExtractor
 import Read as rd
 from SizingImage import SizingImage as Image
 import Global
