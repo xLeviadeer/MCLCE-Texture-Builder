@@ -255,7 +255,7 @@ class WeatherSection(ImageWithBools):
         self.pasteUsedValues(weatherLinkTexture.nested, adjustedPos)
 
         # paste actual image
-        self.image.paste(weatherLinkTexture.getRealImage(), adjustedPos, weatherLinkTexture.getRealImage(), doResize=False)
+        self.image.alpha_composite(weatherLinkTexture.getRealImage(), adjustedPos, doResize=False)
 
     @classmethod
     def getRandomAmountOfRaindrops(self):

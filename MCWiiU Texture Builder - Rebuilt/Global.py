@@ -21,6 +21,10 @@ def useMultithreading(): not executedFromC
 # the error processing mode the program uses when an error occurs (write an error texture or replace it with the known info)
 errorMode = None # replace or error
 
+# enables or disables complex processing for specific functions like weather or kelp. using complex processing may result 
+# in better and/or more "natural" looking textures but will majorly compromise on processing time
+useComplexProcessing = None # true or false
+
 # the debugging status of the program in regards to writing error textures for unknown custom functions
 useErrorTexture = None # true or false
 

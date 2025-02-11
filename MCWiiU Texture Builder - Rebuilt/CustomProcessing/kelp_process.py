@@ -1,15 +1,22 @@
 from CustomProcessing import Custom
 import SizingImage as si
-from SizingImage import SizingImage as Image
 import Utility as ut
-from Sheet import SheetExtractor
 import Read as rd
 from multiprocessing import Pool
 import Global
 
 class kelp_process(Custom.Function):
     def generateBlockOnImage(self, image, pos, color):
-        image.paste(ut.blankImage(ut.size(si.getMultiplier()), color=color, doResize=False), pos, doResize=False) # pastes of block of the multiplier size on the image
+        # pastes of block of the multiplier size on the image
+        image.paste(
+            ut.blankImage(
+                ut.size(si.getMultiplier()), 
+                color=color, 
+                doResize=False
+            ), 
+            pos, 
+            doResize=False
+        ) 
         return image
 
     def ifPositionIsMultiplierModuloLocation(self, pos):
@@ -126,6 +133,57 @@ class kelp_process(Custom.Function):
             c += 1
         return tuple(list(averagePixel) + [0])
 
+    def deconstructImage(self, image):
+        images = []
+
+        y = 0
+        while y < image.height:
+            images.append(image.crop((0, y, ut.singularSizeOnTexSheet, (y + ut.singularSizeOnTexSheet)), doResize=False)) # adds image to list
+            y += ut.singularSizeOnTexSheet
+        return images
+        
+    def reconstructImage(self, images, image):
+        y = 0
+        while y < image.height:
+            image.paste(images[(y // ut.singularSizeOnTexSheet)], (0, y), doResize=False)
+            y += ut.singularSizeOnTexSheet
+        return image
+
+    def complexProcess(self, image):
+        if (Global.executedFromC == True): # disables kelp multiprocessing
+            images = self.deconstructImage(image)
+            i = 0
+            while i < len(images):
+                images[i] = self.processKelpSubImage(images[i])
+                i += 1
+            image = self.reconstructImage(images, ut.blankImage(image.size, doResize=False))
+            return image
+        else:
+            images = self.deconstructImage(image)
+            amountOfParallelProcesses = 20
+            with Pool(amountOfParallelProcesses) as pool:
+                images = pool.map(self.processKelpSubImage, images)
+            image = self.reconstructImage(images, ut.blankImage(image.size, doResize=False))
+            return image
+
+    def simpleProcess(self, image):
+        # for every image in the deconstruction
+        images = self.deconstructImage(image)
+        for i in range(len(images)):
+            # find the average color for this subimage
+            currAverageColor = self.findAverageColor(images[i])
+
+            # create background image
+            bgImage = ut.blankImage(images[i].size, color=currAverageColor, doResize=False)
+
+            # set kelp onto background and set images[i]
+            bgImage.alpha_composite(images[i])
+            images[i] = bgImage
+
+        # return reconstructed image
+        image = self.reconstructImage(images, ut.blankImage(image.size, doResize=False))
+        return image
+
     def createImage(self, *args):
         # determines which texture to use
         readName = "" # sets the readname
@@ -142,35 +200,10 @@ class kelp_process(Custom.Function):
         # replaces all alpha pixels in the kelp with generalized alpha pixels
         image = image.convert("RGBA")
 
-        def deconstructImage(image):
-            images = []
-
-            y = 0
-            while y < image.height:
-                images.append(image.crop((0, y, 16, (y + 16)))) # adds image to list
-                y += ut.singularSizeOnTexSheet
-            return images
-        
-        def reconstructImage(images, image):
-            y = 0
-            while y < image.height:
-                image.paste(images[(y % 16)], (0, y), doResize=False)
-                y += ut.singularSizeOnTexSheet
-            return image
-
-        if (Global.executedFromC == True): # disables kelp multiprocessing
-            images = deconstructImage(image)
-            i = 0
-            while i < len(images):
-                images[i] = self.processKelpSubImage(images[i])
-                i += 1
-            image = reconstructImage(images, ut.blankImage(image.size, doResize=False))
-            return image
+        # use either simple or complex processing
+        if (Global.useComplexProcessing == True):
+            return self.complexProcess(image)
+        elif (Global.useComplexProcessing == False):
+            return self.simpleProcess(image)
         else:
-            images = deconstructImage(image)
-            amountOfParallelProcesses = 20
-            with Pool(amountOfParallelProcesses) as pool:
-                images = pool.map(self.processKelpSubImage, images)
-            image = reconstructImage(images, ut.blankImage(image.size, doResize=False))
-            return image
-        
+            Global.endProgram("the kelp_process image process mode could not be decided because Global.useComplexProcessing was not set")

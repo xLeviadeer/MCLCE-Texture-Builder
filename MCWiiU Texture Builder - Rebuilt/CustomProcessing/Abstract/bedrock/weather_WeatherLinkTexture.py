@@ -84,6 +84,12 @@ class WeatherLinkTexture(ImageWithBools):
                     if (self.__lastColumnWithPixels < x):
                         self.__lastColumnWithPixels = x
 
+            # set values if they are left empty (the texture must be blank for this to happen)
+            if (self.__firstRowWithPixels == None): self.__firstRowWithPixels = 0
+            if (self.__lastRowWithPixels == -1): self.__lastRowWithPixels = 0
+            if (self.__firstColumnWithPixels == None): self.__firstColumnWithPixels = 0
+            if (self.__lastColumnWithPixels == -1): self.__lastColumnWithPixels = 0
+
             # run through pixels and execute the function
             ut.forEveryPixel(self.image, buildImageAsBools)
             self._setPaddingBools()

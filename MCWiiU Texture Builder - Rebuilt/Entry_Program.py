@@ -14,6 +14,7 @@ entry = EntryPoint(
     executedFromC=True,
     errorMode=args[6],
     processingSize=args[11],
+    useComplexProcessing=args[12],
     debug=args[10],
     
     inputPath=args[1],

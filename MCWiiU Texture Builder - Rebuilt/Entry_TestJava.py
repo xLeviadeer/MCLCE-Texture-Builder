@@ -10,6 +10,7 @@ entry = EntryPoint(
     executedFromC=False,
     errorMode="replace",
     processingSize=16,
+    useComplexProcessing=True,
     debug=False,
     
     inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.13.2_java",

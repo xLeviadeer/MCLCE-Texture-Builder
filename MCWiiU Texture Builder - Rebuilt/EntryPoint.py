@@ -24,6 +24,7 @@ class EntryPoint():
                 executedFromC,
                 errorMode,
                 processingSize,
+                useComplexProcessing,
                 debug, # enables all print statements if true
                 inputPath,
                 inputPathType,
@@ -88,6 +89,7 @@ class EntryPoint():
         self.showTracebacks = cast(bool, showTracebacks)
         
         Global.useErrorTexture = useErrorTexture
+        Global.useComplexProcessing = cast(bool, useComplexProcessing)
 
     # output game (index) function
     def _setOutputStructure(self):
@@ -103,6 +105,7 @@ class EntryPoint():
                 Global.outputStructure = "wiiu"
                 Global.outputDump = "dump"
 
+    # function to check versions and install status of packages and python
     def __checkPythonAndPackageVersions(self):
         # check that python is the correct version
         pythonRequiredVersion = (3, 12)

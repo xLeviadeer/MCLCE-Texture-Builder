@@ -74,6 +74,7 @@ def moveAssets(set):
         "base_textures\\wiiu_mipmaps": True,
         "base_textures\\notFound.png": False,
         "base_textures\\error.png": False,
+        "base_textures\\drop_samples.png": False,
         "linking_libraries\\Base_java.json": False,
         "linking_libraries\\Base_bedrock.json": False,
         "linking_libraries\\version_patches_java.json": False,

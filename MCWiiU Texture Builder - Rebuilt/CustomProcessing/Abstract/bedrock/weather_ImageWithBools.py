@@ -322,7 +322,7 @@ class ImageWithBools():
         self.pasteUsedValues(imageWithBools.nested, pos)
 
         # paste actual image
-        self.image.paste(imageWithBools.image, pos, imageWithBools.image, doResize=False)
+        self.image.alpha_composite(imageWithBools.image, pos, doResize=False)
 
     def alreadyUsed(self, index:int) -> bool:
         """
