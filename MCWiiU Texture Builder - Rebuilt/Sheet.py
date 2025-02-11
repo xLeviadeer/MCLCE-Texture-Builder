@@ -48,7 +48,7 @@ class SheetExtractor():
         elif isinstance(imagePathOrSize, Image): # image
             image = imagePathOrSize
         else: 
-            Global.endProgram("the provided imageOrPath was not an image or a path")
+            Global.endProgram("the provided imagePathOrSize was not an image or a path")
         self.sheet = image
 
         # check formatting of subImageSize
@@ -60,39 +60,6 @@ class SheetExtractor():
         self.subSizeYPix = subImageSize[1]
 
         # subsize X/Y pos would always be 1
-
-    # size X pix
-    @property
-    def sizeXPix(self):
-        return self.sheet.width
-    # size Y pix
-    @property
-    def sizeYPix(self):
-        return self.sheet.height
-
-    # size X pos
-    @property
-    def sizeXPos(self):
-        return (-(-self.sheet.width // self.subSizeXPix))
-    # size Y pos
-    @property
-    def sizeYPos(self):
-        return (-(-self.sheet.height // self.subSizeYPix))
-
-    # size pix variable
-    @property
-    def sizePix(self):
-        return (self.sizeXPix, self.sizeYPix)
-    
-    # size pos variable
-    @property
-    def sizePos(self):
-        return (self.sizeXPos, self.sizeYPos)
-    
-    # subsize pix variable
-    @property
-    def subSizePix(self):
-        return (self.subSizeXPix, self.subSizeYPix)
 
     def _tuplePositionCheck(self, pos) -> None:
         if (not ut.tupleIsPosition(pos)):
@@ -145,7 +112,7 @@ class SheetExtractor():
         self._tuplePositionCheck(pos)
         return (self.getPixelXOf(pos[0]), self.getPixelYOf(pos[1]))
 
-    def extract(self, pos:tuple, chunk:tuple=(1, 1)) -> Image:
+    def extract(self, pos:tuple, chunk:tuple=(1, 1), doResize:bool=True) -> Image:
         """
         Description:
             Extracts an image out of the sheet from the given position
@@ -184,9 +151,9 @@ class SheetExtractor():
         cropBox = pixelPos + chunkPos
 
         # crop and return image
-        return self.sheet.crop(cropBox, doResize=False)
+        return self.sheet.crop(cropBox, doResize=doResize)
 
-    def insert(self, pos:tuple, image:Image, isDestructive:bool=True) -> Union[None, Image]:
+    def insert(self, pos:tuple, image:Image, isDestructive:bool=True, doResize:bool=True) -> Union[None, Image]:
         """
         Description:
             Inserts an image onto the sheet at the given position
@@ -212,10 +179,10 @@ class SheetExtractor():
 
         # insertion based on destructive status
         if (isDestructive == True):
-            self.sheet.paste(image, pixelPos, doResize=False)
+            self.sheet.paste(image, pixelPos, doResize=doResize)
         else:
             sheet = self.sheet.copy()
-            sheet.paste(image, pixelPos, doResize=False)
+            sheet.paste(image, pixelPos, doResize=doResize)
             return sheet
 
     def getSheet(self) -> Image:
@@ -227,3 +194,36 @@ class SheetExtractor():
             - Image, sheet image
         """
         return self.sheet
+
+    # size X pix
+    @property
+    def sizeXPix(self):
+        return self.sheet.width
+    # size Y pix
+    @property
+    def sizeYPix(self):
+        return self.sheet.height
+
+    # size X pos
+    @property
+    def sizeXPos(self):
+        return (-(-self.sheet.width // self.subSizeXPix))
+    # size Y pos
+    @property
+    def sizeYPos(self):
+        return (-(-self.sheet.height // self.subSizeYPix))
+
+    # size pix variable
+    @property
+    def sizePix(self):
+        return (self.sizeXPix, self.sizeYPix)
+    
+    # size pos variable
+    @property
+    def sizePos(self):
+        return (self.sizeXPos, self.sizeYPos)
+    
+    # subsize pix variable
+    @property
+    def subSizePix(self):
+        return (self.subSizeXPix, self.subSizeYPix)
