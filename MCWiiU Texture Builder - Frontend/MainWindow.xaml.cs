@@ -50,7 +50,7 @@ namespace MCWiiU_Texture_Builder___Frontend
 
             // InputGames
             InputGames = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\input_games.json");
-            InputGameCombo = ArrayToCombo(InputGameCombo, InputGames, "");
+            InputGameCombo = ArrayToCombo(InputGameCombo, InputGames);
 
             // versions
             InputVersionsJava = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\input_versions_java.json");
@@ -58,21 +58,21 @@ namespace MCWiiU_Texture_Builder___Frontend
 
             // location
             OutputDrives = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_drives.json");
-            OutputDriveCombo = ArrayToCombo(OutputDriveCombo, OutputDrives, "");
+            OutputDriveCombo = ArrayToCombo(OutputDriveCombo, OutputDrives);
 
             // oversized modes
             BuildModes = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\modes_build.json");
-            BuildModeCombo = ArrayToCombo(BuildModeCombo, BuildModes, "");
+            BuildModeCombo = ArrayToCombo(BuildModeCombo, BuildModes);
             BuildModeCombo.SelectedIndex = 0;
 
             // write modes
             OutputGames = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures.json");
-            OutputGameCombo = ArrayToCombo(OutputGameCombo, OutputGames, "");
+            OutputGameCombo = ArrayToCombo(OutputGameCombo, OutputGames);
             OutputGameCombo.SelectedIndex = 0;
 
             // size modes
             SizeModes = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\modes_size.json");
-            SizeModeCombo = ArrayToCombo(SizeModeCombo, SizeModes, "x");
+            SizeModeCombo = ArrayToCombo(SizeModeCombo, SizeModes, "x", 2);
             SizeModeCombo.SelectedIndex = 0;
 
             // supported version
@@ -286,11 +286,14 @@ namespace MCWiiU_Texture_Builder___Frontend
         }
 
         // function for updating combo box items
-        private System.Windows.Controls.ComboBox ArrayToCombo(System.Windows.Controls.ComboBox combo, List<string> arr, string addition)
+        private System.Windows.Controls.ComboBox ArrayToCombo(System.Windows.Controls.ComboBox combo, List<string> arr, string addition="", int position=-1)
         {
             foreach (String item in arr)
             {
-                combo.Items.Add(Char.ToUpper(item[0]) + item.Substring(1) + addition); // add and capitalize
+                string name = Char.ToUpper(item[0]) + item.Substring(1);
+                int appensionPosition = (position == -1) ? name.Length : position;
+                name = name.Insert(appensionPosition, addition);
+                combo.Items.Add(name); // add and capitalize
             }
             return combo;
         }
@@ -492,6 +495,7 @@ namespace MCWiiU_Texture_Builder___Frontend
             } // else does nothing for version, it equals "none"
 
             const bool python_debug_mode = false;
+
             string[] inputArgs = 
             { 
                 InputText.Text, // input path (1)
@@ -504,7 +508,8 @@ namespace MCWiiU_Texture_Builder___Frontend
                 OutputDrives[OutputDriveCombo.SelectedIndex], // drive (8)
                 "python_builder", // location of the python file (9)
                 python_debug_mode.ToString(), // debug mode (10)
-                SizeModes[SizeModeCombo.SelectedIndex] // size (11)
+                Regex.Replace(SizeModes[SizeModeCombo.SelectedIndex], "[a-zA-Z ]", ""), // size (11)  
+                (Regex.Replace(SizeModes[SizeModeCombo.SelectedIndex], "[0-9 ]", "") == "simpleprocessing") ? "False" : "True" // complex processing type (12)
             };
 
             programEntry.Arguments = "\"" + string.Join("\" \"", inputArgs); // join arguments
@@ -601,9 +606,22 @@ namespace MCWiiU_Texture_Builder___Frontend
 
         private void SizeModeCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((SizeModeCombo.SelectedIndex > 0) && (DontSaveDefault == true))
+            if ((SizeModeCombo.SelectedIndex > 0) && (DontSaveDefault == false))
             {
-                System.Windows.MessageBox.Show("Using texture packs larger than x16 may cause in-game performance to drop", "Warning");
+                string warning = "Using texture packs larger than x16 may cause in-game performance to drop.";
+
+                // simple processing
+                if (Regex.Replace(SizeModes[SizeModeCombo.SelectedIndex], "[0-9 ]", "") == "simpleprocessing")
+                {
+                    warning += "\nSome sizes only allow simple processing to be used.";
+                } else
+                { // complex processing
+                    warning += "\nAdditionally, using \"simple processing\" is recommended for packs bigger than x16.";
+                }
+    
+                warning += "\nYou can find more info about size processing types in \"Help Configuring?\"";
+
+                System.Windows.MessageBox.Show(warning, "Warning");
             }
             storeSelections();
         }
