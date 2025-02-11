@@ -3,9 +3,9 @@ The MCWiiU Texture Builder is a texture conversion tool to convert textures from
 
 ## Things To-do
 Planned items are planned to be developed, whereas non-planned items may not be implemented
-- [ ] (planned) support for all types
+- [x] (planned) support for all types
     - [x] support for all java textures
-    - [ ] support for different versions of all java textures
+    - [x] support for different versions of all java textures
     - [x] support for all bedrock textures
     - [x] support for different versions of all bedrock textures
 - [ ] support for all textures being animated
