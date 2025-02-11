@@ -58,8 +58,8 @@ RegularRandom = ChatGPTUniqueRandom
 process = psutil.Process(os.getpid())
 
 MIN = 0 # min
-MAX = 10000 # max
-SIZEPERCENTOFPREXISTING = 0.95
+MAX = 1000 # max
+SIZEPERCENTOFPREXISTING = 0.0
 RUNTIMES = None # amount of times to run (None will equal the possible values)
 PLACESMOVEDFORVISUALIZATION = 5 # how many places to move the value to the left when printing
 DOPRINTREGULAR = True # print regular at all
