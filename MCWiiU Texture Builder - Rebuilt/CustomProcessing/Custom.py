@@ -9,6 +9,7 @@ import Utility as ut
 import time
 import SizingImage
 from builtins import type as typeof
+from SizingImage import SizingImage as Image
 
 class Function(ABC):
     """
@@ -26,8 +27,20 @@ class Function(ABC):
         super().__init__()
         self.wiiuName = wiiuName
         self.type = type
-        self.wiiuImage = wiiuImage
         self.isShared = isShared
+
+        # special processing for wiiuImage being none
+        if (wiiuImage == None): # if the image is none, try to get it from the type and wiiuName
+            # WARNING: this code will break if you try to get an image which isn't abstract; rather it will return the entire sheet not a subsection of it
+            # however, there is no way to actually detect this
+            try:
+                wiiuType = self.type[:-1] if (self.type.endswith("s")) else self.type
+                self.wiiuImage = Image.open(f"{Global.getMainWorkingLoc()}\\base_textures\\wiiu_abstract\\{wiiuType}\\{wiiuName}.png")
+            except FileNotFoundError:
+                print("wiiuImage was set to none and an abstract image for the wiiuName couldn't be found, wiiuImage will be none in this case", log.WARNING)
+                self.wiiuImage = None
+        else:
+            self.wiiuImage = wiiuImage
 
     @abstractmethod
     def createImage(self):
@@ -219,5 +232,9 @@ def runFunctionFromPath(functionType:str, functionName:str, wiiuKey:str, type:st
         - A SizingImage proccessed by the respective custom function
     """
 
-    cls_instance = getClass(functionType, functionName)(wiiuKey, type, wiiuImage, isShared=(functionType.lower() == "shared"))
+
+
+    cls = getClass(functionType, functionName)
+    if isinstance(cls, SizingImage.SizingImage): return cls # if return is an image, return
+    cls_instance = cls(wiiuKey, type, wiiuImage, isShared=(functionType.lower() == "shared"))
     return _runFunction(cls_instance, isPrintRecursed, args)

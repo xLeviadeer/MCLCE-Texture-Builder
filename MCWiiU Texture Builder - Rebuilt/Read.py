@@ -6,7 +6,8 @@ import Global
 from CodeLibs import Logger as log
 from CodeLibs import Json
 from CodeLibs.Path import Path
-from CustomProcessing import Custom
+from CustomProcessing.Custom import runFunctionFromPath
+from CustomProcessing.Custom import formatName
 from SupportedTypes import supportedTypes
 from SizingImage import SizingImage as Image
 import SizingImage as si
@@ -53,7 +54,7 @@ def patchForVersion(path, type, wiiuName, doCustomProcessing:bool=True): # does 
     if (Global.inputVersion == None): # if the version doesn't exist
         print("attempting to run version patches but no version has been set", log.EXIT)
         Global.bar.close()
-
+    
     # try to read the version patches
     versionPatches = None
     try:
@@ -72,7 +73,7 @@ def patchForVersion(path, type, wiiuName, doCustomProcessing:bool=True): # does 
             if (doCustomProcessing == False): return None # does nothing but return none as a signal it didn't work
             print(f"found version patch for {wiiuName} regarding {Global.inputVersion}", log.PATCHFUNCTION)
             # passes no wiiu image
-            returnImage = Custom.runFunctionFromPath("versional", Custom.formatName(wiiuName), wiiuName, type, None)
+            returnImage = runFunctionFromPath("versional", formatName(wiiuName), wiiuName, type[:-9], None) # [:-9] removes the word "abstract"
             if (returnImage == None): # if there is no function found
                 print(f"(could not find) or (error while processing) patch function for \"{wiiuName}\" regarding {Global.inputVersion}", log.EXIT)
                 Global.bar.close()
@@ -320,7 +321,7 @@ def readMulticolorGrayscale(wiiuName, type, assign, names, namePath, whitePath, 
     finalImage = assign(finalImage, (not whiteFound)) # enhance brightness if white wasn't found
     return finalImage
 
-def readWiiuImage(inWiiuAbstract, name):
+def readWiiuImage(inWiiuAbstract, name, doResize=True):
     name = f"{name}.png" if (not name.endswith(".png")) else name
     addition = None
     match (inWiiuAbstract):
@@ -331,6 +332,7 @@ def readWiiuImage(inWiiuAbstract, name):
     image = Image.open(Path(Global.getMainWorkingLoc(), "base_textures", addition, name).getPath(withFirstSlash=False))
     
     # multiplier physics
-    image = image.resize(image.size, Sampling.NEAREST) # multiplier is automatic
+    if (doResize == True):
+        image = image.resize(image.size, Sampling.NEAREST) # multiplier is automatic
 
     return image
