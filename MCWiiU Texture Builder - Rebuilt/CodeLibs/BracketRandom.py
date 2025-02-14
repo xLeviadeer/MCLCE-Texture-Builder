@@ -2,7 +2,9 @@ from CodeLibs import Logger as log
 from CodeLibs.Logger import print
 import random
 from typing import Union
-from Utility import test
+from CodeLibs.Path import Path
+from CodeLibs.JsonWritable import JsonWritable
+from CodeLibs import JsonHandler
 
 class NoRandomValuesAvailableException(Exception):
     pass
@@ -10,7 +12,7 @@ class NoRandomValuesAvailableException(Exception):
 class RandomAlreadyUsedExeption(Exception):
     pass
 
-class Random():
+class Random(JsonWritable):
     # amountUsed
     # __min
     # __max
@@ -32,10 +34,11 @@ class Random():
                     - Tuple or List: creates a new class using the provided values; removes values not within __min/__max
                     - None: creates a new class with no prexisting values
             """
-
-                    # set value for __min
             
             print("SETTING UP CLASS", log.DEBUGBRACKETRANDOM)
+
+            # set bypass for JsonWritable
+            self._doBypassAllCheck = True
 
             # self executed default
             self.__selfExecuted = False
@@ -308,6 +311,42 @@ class Random():
             lst.append(self.getRandom())
         return lst
     
+    @classmethod
+    def scramble(self, lst:list):
+        """
+        Description:
+            scrambles the input list by using bracket random
+        ---
+        Arguments:
+            - lst : List <>
+                - list of values to be scrambled
+        ---
+        Returns:
+            - a scrambled version of the list
+        """
+
+        # type check for list, values of list don't matter
+        if not isinstance(lst, list):
+            raise TypeError(f"provided value for lst is not a list: {type(lst)}")
+        
+        # create a bracket random of the size of the length of the list
+        randomIndexes = Random(0, (len(lst) - 1))
+
+        # pick a random (non-repeating) value from the original list and append it to the new list
+        scrambledLst = []
+        while True:
+            try: # try to get random
+                randomIndex = randomIndexes.getRandom() 
+            except NoRandomValuesAvailableException: # if no randoms are left
+                break
+            
+            # add value at index to new
+            scrambledLst.append(lst[randomIndex])
+
+        # return new list
+        return scrambledLst
+
+    # can be a class method
     def getRegularRandom(self=None, *, min:int=None, max:int=None):
         """
         Description:
@@ -345,6 +384,89 @@ class Random():
                 lst.append(index + offset)
         return lst
 
+    @property
+    def structure(self):
+        """
+        Description:
+            generates json structure for saving
+        """
+        self._structure = {
+            "amountUsed": self.amountUsed,
+            "min": self.__min,
+            "max": self.__max,
+            "brackets": self.__brackets
+        }
+        return super().structure
+
+    def save(self, path:Path, appendCWD:bool=True):
+        """
+        Description:
+            writes this class's data as a JSON file to the specified path
+        ---
+        Arguments:
+            - path : Path <None>
+            - appendCWD : Boolean <True>
+                - true: appends the CWD
+                - false: direct path with no CWD
+        ---
+        Returns:
+            - nothing, writes the file
+        """
+
+        # verify path type
+        if not isinstance(path, Path):
+            raise TypeError(f"value for variable 'path' isn't a Path: {type(path)}")
+
+        # verify appendCWD type
+        if not isinstance(appendCWD, bool):
+            raise TypeError(f"value for variable 'appendCWD' isn't a Path: {type(appendCWD)}")
+
+        # write json
+        JsonHandler.writeAll(path, self.structure)
+
+    @classmethod
+    def load(self, path:Path, appendCWD:bool=True):
+        """
+        Description:
+            loads a copy of this class from a JSON file at the specified path
+        ---
+        Arguments:
+            - path : Path <None>
+            - appendCWD : Boolean <True>
+                - true: appends the CWD
+                - false: direct path with no CWD
+        ---
+        Returns:
+            - returns a copy of this class
+        """
+
+        # verify path type
+        if not isinstance(path, Path):
+            raise TypeError(f"value for variable 'path' isn't a Path: {type(path)}")
+
+        # verify appendCWD type
+        if not isinstance(appendCWD, bool):
+            raise TypeError(f"value for variable 'appendCWD' isn't a Path: {type(appendCWD)}")
+
+        # read json and cast brackets back into number keys
+        data = JsonHandler.castFor(
+            JsonHandler.readAll(path),
+            ("brackets"),
+            int,
+            castKeys=True,
+            targetSubValues=True
+        )
+
+        # load values
+        cls = Random()
+        cls.amountUsed = data["amountUsed"]
+        cls.__min = data["min"]
+        cls.__max = data["max"]
+        cls.__brackets = data["brackets"]
+
+        # return the new class
+        return cls
+
     def copy(self):
         """
         Description:
@@ -371,7 +493,6 @@ class Random():
 
     # --- Tests ---
 
-    @test
     def showBrackets(self):
         """
         Description:
