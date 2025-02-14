@@ -4,7 +4,7 @@ from CodeLibs.Logger import print
 import Utility as ut
 import Global
 from CodeLibs import Logger as log
-from CodeLibs import Json
+from CodeLibs import JsonHandler
 from CodeLibs.Path import Path
 from CustomProcessing.Custom import runFunctionFromPath
 from CustomProcessing.Custom import formatName
@@ -58,7 +58,7 @@ def patchForVersion(path, type, wiiuName, doCustomProcessing:bool=True): # does 
     # try to read the version patches
     versionPatches = None
     try:
-        versionPatches = Json.readFor("\\linking_libraries\\version_patches_" + Global.inputGame, ["versions", Global.inputVersion, type])
+        versionPatches = JsonHandler.readFor("\\linking_libraries\\version_patches_" + Global.inputGame, ["versions", Global.inputVersion, type])
     except:
         # this can occur if the version patch (section, not just one) that's being read for doesn't exist. In this case, the program should continue to run
         # this also always occurs for bedrock since there is no version in bedrock
@@ -194,7 +194,7 @@ def readWiiuLibFor(type, travel):
     content = False
     if (type.endswith("s")): type = type[:-1] # if there's and s at the end, get rid of it
     try:
-        content = Json.readFor("\\linking_libraries\\wiiu_" + type, travel)
+        content = JsonHandler.readFor("\\linking_libraries\\wiiu_" + type, travel)
     except:
         print(f"{type}: could not read wiiu -> {travel}", log.DEBUG)
     return content
@@ -202,8 +202,8 @@ def readWiiuLibFor(type, travel):
 def readLinkLibFor(game, travel):
     content = False
     try:
-        content = Json.readFor("\\linking_libraries\\base_" + game, travel)
-    except:
+        content = JsonHandler.readFor("\\linking_libraries\\base_" + game, travel)
+    except Exception as e:
         print(f"{game}: could not read wiiu -> {travel}", log.DEBUG)
     return content
 

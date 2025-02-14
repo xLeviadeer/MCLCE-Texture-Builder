@@ -3,7 +3,7 @@
 import Internal
 import Global
 import os
-from CodeLibs import Json as json
+from CodeLibs import JsonHandler
 from CodeLibs.Path import Path
 from builtins import type as typeof
 
@@ -114,7 +114,7 @@ match (selectedMain):
             i = 0
             typeSpaceOptions = []
             print("select a typeSpace")
-            for type in json.readAll(Path("linking_libraries", "Base_java").getPath()):
+            for type in JsonHandler.readAll(Path("linking_libraries", "Base_java")):
                 print(f"{i}) {type}")
                 typeSpaceOptions.append(type)
                 i += 1

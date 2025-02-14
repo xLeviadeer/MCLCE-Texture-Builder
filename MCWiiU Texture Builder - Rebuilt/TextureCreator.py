@@ -15,7 +15,7 @@ from SizingImage import SizingImage as Image
 from builtins import type as typeof
 import os
 import shutil
-from CodeLibs import Json
+from CodeLibs import JsonHandler
 import SupportedTypes
 import Global
 import Utility as ut
@@ -232,7 +232,7 @@ def translateForAllTypes():
             # specific arr variables
             wiiuImage = rd.readWiiuImage(False, f"wiiu_{wiiuType}")
             constructedImage = Image.new("RGBA", si.deconvertTuple(wiiuImage.size), "#ffffff00")
-            linkArr = Json.readFor("\\linking_libraries\\Base_" + Global.inputGame, type)
+            linkArr = JsonHandler.readFor("\\linking_libraries\\Base_" + Global.inputGame, type)
             currPos = [0, 0]
 
             def getWiiuImageForCurrTex(): # function that will get the current texture sheet position's texture 
@@ -303,7 +303,7 @@ def translateForAllTypes():
         # --- WiiU Abstract ---
         if (wiiuAbstract != False):
             # specific abstract variables
-            linkAbstract = Json.readFor("\\linking_libraries\\Base_" + Global.inputGame, type + "_abstract")
+            linkAbstract = JsonHandler.readFor("\\linking_libraries\\Base_" + Global.inputGame, type + "_abstract")
 
             # for wiiu abstract lib
             for wiiuName in wiiuAbstract:

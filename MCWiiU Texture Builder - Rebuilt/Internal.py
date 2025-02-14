@@ -4,7 +4,7 @@ from SizingImage import SizingImage as Image
 import os
 import shutil
 import subprocess
-from CodeLibs import Json
+from CodeLibs import JsonHandler
 import Global
 import SupportedTypes
 from zipfile import ZipFile
@@ -33,8 +33,8 @@ def moveAssets(set):
 
     # find needed version and write them
     print("finding needed versions")
-    Json.writeAll("\\global\\input_versions_java", findNeededVersions("java"))
-    Json.writeAll("\\global\\input_versions_bedrock", findNeededVersions("bedrock"))
+    JsonHandler.writeAll("\\global\\input_versions_java", findNeededVersions("java"))
+    JsonHandler.writeAll("\\global\\input_versions_bedrock", findNeededVersions("bedrock"))
     print("completed; wrote needed versions")
 
     # --- CMD Compile Section ---
@@ -130,7 +130,7 @@ def separateWiiuSheet(type):
     else:
         singularTexSizeOnSheet = 16
 
-    wiiuSheet = Json.readFor("\\linking_libraries\\wiiu_" + type, "Arr")
+    wiiuSheet = JsonHandler.readFor("\\linking_libraries\\wiiu_" + type, "Arr")
     wiiuImage = Image.open(Global.getMainWorkingLoc() + "\\base_textures\\wiiu_" + type + ".png")
     currPos = [0, 0]
     number = [1]
@@ -157,7 +157,7 @@ def separateWiiuSheet(type):
 
 # check the existence of abstract textures of a type
 def checkAbstractTextures(type):
-    wiiuLib = Json.readFor("\\linking_libraries\\wiiu_" + type, "Abstract")
+    wiiuLib = JsonHandler.readFor("\\linking_libraries\\wiiu_" + type, "Abstract")
     dirLib = os.listdir(Global.getMainWorkingLoc() + "\\base_textures\\wiiu_abstract")
 
     notFound = []
@@ -179,7 +179,7 @@ def findNeededVersions(game):
     # read version patches
     if not (os.path.isfile(Global.getMainWorkingLoc() + "\\linking_libraries\\version_patches_" + game + ".json")):
         Global.endProgram(f"version patches don't exist (for {game}), cannot run findNeededVersions")
-    versionPatches = Json.readFor("\\linking_libraries\\version_patches_" + game, ["versions"])
+    versionPatches = JsonHandler.readFor("\\linking_libraries\\version_patches_" + game, ["versions"])
     # sort version patches
     versionPatches = dict(sorted(versionPatches.items(), key=lambda item: [int(x) for x in item[0].split('.')]))
     neededVersions = []
@@ -200,7 +200,7 @@ def generateVersionPatches():
     differences = {}
     prexistingVersionPatches = None
     if (os.path.isfile(Global.getMainWorkingLoc() + "\\linking_libraries\\version_patches_" + Global.inputGame + ".json")):
-        prexistingVersionPatches = Json.readFor("\\linking_libraries\\version_patches_" + Global.inputGame, ["versions"])
+        prexistingVersionPatches = JsonHandler.readFor("\\linking_libraries\\version_patches_" + Global.inputGame, ["versions"])
 
     # for every version
     path = Global.getMainWorkingLoc() + "\\base_textures"
@@ -283,14 +283,14 @@ def generateVersionPatches():
         count += 1
 
     # save
-    Json.writeAll("\\linking_libraries\\version_patches_" + Global.inputGame, {"versions": versionPatches})
-    Json.writeAll("\\linking_libraries\\new_patches_" + Global.inputGame, differences)
+    JsonHandler.writeAll("\\linking_libraries\\version_patches_" + Global.inputGame, {"versions": versionPatches})
+    JsonHandler.writeAll("\\linking_libraries\\new_patches_" + Global.inputGame, differences)
 
 # add to the version patches
 def addToVersionPatches(typeSpace, key, value, majorUpdate, minorVersion=None, direction=True):    
     prexistingVersionPatches = None
     if (os.path.isfile(Global.getMainWorkingLoc() + "\\linking_libraries\\version_patches_" + Global.inputGame + ".json")):
-        prexistingVersionPatches = Json.readFor("\\linking_libraries\\version_patches_" + Global.inputGame, ["versions"])
+        prexistingVersionPatches = JsonHandler.readFor("\\linking_libraries\\version_patches_" + Global.inputGame, ["versions"])
     else:
         print("---version patches do not exist, please generate version patches before using this option"); exit()
 
@@ -311,7 +311,7 @@ def addToVersionPatches(typeSpace, key, value, majorUpdate, minorVersion=None, d
             prexistingVersionPatches[version][typeSpace][key] = value # always overwrites value
 
     # write
-    Json.writeAll(f"\\linking_libraries\\version_patches_{Global.inputGame}", {"versions": prexistingVersionPatches})
+    JsonHandler.writeAll(f"\\linking_libraries\\version_patches_{Global.inputGame}", {"versions": prexistingVersionPatches})
 
 # generate color signatures between all versions of the game
 def generateColorSignatures(type, mode):
@@ -383,7 +383,7 @@ def generateColorSignatures(type, mode):
                 signaturesList[wiiuName] = buildSignature(wiiuImage)
 
         # save the final
-        Json.writeAll("\\color_signatures\\wiiu_" + type, signaturesList)
+        JsonHandler.writeAll("\\color_signatures\\wiiu_" + type, signaturesList)
     # -- Java/Bedrock --
     def checkDirectory(currPath, type, additionalDir = None):
         path = currPath if (additionalDir == None) else (f"{currPath}\\{additionalDir}")
@@ -408,7 +408,7 @@ def generateColorSignatures(type, mode):
             checkDirectory(currPath, type)
 
         # save the final
-        Json.writeAll("\\color_signatures\\" + Global.inputVersion + "_" + Global.inputGame, signaturesList)
+        JsonHandler.writeAll("\\color_signatures\\" + Global.inputVersion + "_" + Global.inputGame, signaturesList)
 
 # create a linking library
 def generateLinkingLibrary():
@@ -419,9 +419,9 @@ def generateLinkingLibrary():
         wiiuType = type
         if (type.endswith("s")): wiiuType = type[:-1] # if there's and s at the end, get rid of it
         typeAbstract = type + "_abstract"
-        wiiuSigs = Json.readAll("\\color_signatures\\wiiu_" + wiiuType)
-        linkSigs = Json.readFor("\\color_signatures\\" + Global.inputVersion + "_" + Global.inputGame, type)
-        wiiuLib = Json.readAll("\\linking_libraries\\wiiu_" + wiiuType)
+        wiiuSigs = JsonHandler.readAll("\\color_signatures\\wiiu_" + wiiuType)
+        linkSigs = JsonHandler.readFor("\\color_signatures\\" + Global.inputVersion + "_" + Global.inputGame, type)
+        wiiuLib = JsonHandler.readAll("\\linking_libraries\\wiiu_" + wiiuType)
 
         linkLib[type] = {} # ensure type is in linkLib
         linkLib[typeAbstract] = {}
@@ -441,7 +441,7 @@ def generateLinkingLibrary():
                     linkLib[typeAbstract][wiiuSig] = found
     
     # save whole linkLib
-    Json.writeAll("\\linking_libraries\\" + Global.inputVersion + "_" + Global.inputGame, linkLib)
+    JsonHandler.writeAll("\\linking_libraries\\" + Global.inputVersion + "_" + Global.inputGame, linkLib)
 
 # get the java texture packs that are on the system for above the version
 def getTextures(path, mode):
@@ -626,7 +626,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
             return True
 
     # inequality bypass reading
-    bypass = Json.readAll(Path("equality_libraries", "inequality_bypass").getPath())
+    bypass = JsonHandler.readAll(Path("equality_libraries", "inequality_bypass").getPath())
 
     inequalities = {}
     # function for handling adding to inequalities
@@ -830,7 +830,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
 
     # save the inequalities list to a file
     if (doGeneration == True): return # dont run if generating images
-    Json.writeAll(Path("equality_libraries", "inequalities").getPath(), inequalities)
+    JsonHandler.writeAll(Path("equality_libraries", "inequalities").getPath(), inequalities)
 
 # generates the MT Locs
 def generateMTLocs():
@@ -896,7 +896,7 @@ def generateMTLocs():
                 hierarchy[side][section][wiiuName] = f"{addon}.png"
 
     # write MTLocs
-    Json.writeAll("\\Info\\MTLocs.json", hierarchy)
+    JsonHandler.writeAll("\\Info\\MTLocs.json", hierarchy)
     with open(f"{Global.getMainWorkingLoc()}\\Info\\MTLocs.txt", 'w') as MTLocs:
         MTLocs.write("\n".join(lst))
         
