@@ -96,7 +96,11 @@ class Path():
     def _getRaw(self):
         return self.path
 
-    def getPath(self, withFirstSlash=True, withLastSlash=False):
+    def getPath(self, withFirstSlash=True, withLastSlash=False, doFormalize=False):
+        # formalize if doFormalize is true
+        if (doFormalize == True):
+            self.formalize()
+        
         # isRootDirectory handling
         if (self.isRootDirectory == True):
             withFirstSlash = False
@@ -108,26 +112,26 @@ class Path():
             string = f"{string}\\"
         return string
     
-    def getPathAppend(self, *args, withFirstSlash=True, withLastSlash=False):
+    def getPathAppend(self, *args, withFirstSlash=True, withLastSlash=False, doFormalize=False):
         self.__addToPath(args)
-        return self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash)
+        return self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash, doFormalize=doFormalize)
 
-    def getPathAppendTemp(self, *args, withFirstSlash=True, withLastSlash=False):
+    def getPathAppendTemp(self, *args, withFirstSlash=True, withLastSlash=False, doFormalize=False):
         # add to path and get output
         count = self.__addToPath(args)
-        copyOutput = self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash)
+        copyOutput = self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash, doFormalize=doFormalize)
         # remove from path
         self.__slice(end=(len(self.path) - count))
         return copyOutput
     
-    def getPathPrepend(self, *args, withFirstSlash=True, withLastSlash=False):
+    def getPathPrepend(self, *args, withFirstSlash=True, withLastSlash=False, doFormalize=False):
         self.__addToPath(args, index=0)
-        return self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash)
+        return self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash, doFormalize=doFormalize)
     
-    def getPathPrependTemp(self, *args, withFirstSlash=True, withLastSlash=False):
+    def getPathPrependTemp(self, *args, withFirstSlash=True, withLastSlash=False, doFormalize=False):
         # add to path and get output
         count = self.__addToPath(args, index=0)
-        copyOutput = self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash)
+        copyOutput = self.getPath(withFirstSlash=withFirstSlash, withLastSlash=withLastSlash, doFormalize=doFormalize)
         # remove from path
         self.__slice(start=count)
         return copyOutput
