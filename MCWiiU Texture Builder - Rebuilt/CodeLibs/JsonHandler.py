@@ -430,7 +430,15 @@ def writeFor(
     
 # - utilities -
 
-def castFor(dictionary:dict, targetPath:Union[list, tuple], castToType, castKeys:bool=False, targetSubValues:bool=False, *, doPrint:bool=False) -> dict:
+def castFor(
+        dictionary:dict, 
+        targetPath:Union[list, tuple], 
+        castToType, 
+        castKeys:bool=False, 
+        targetSubValues:bool=False, 
+        *, 
+        doPrint:bool=False
+    ) -> dict:
     """
     Description:
         casts all keys at the targeted position to the specified type

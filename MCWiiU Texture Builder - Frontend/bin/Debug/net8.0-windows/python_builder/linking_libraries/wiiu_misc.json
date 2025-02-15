@@ -1,0 +1,29 @@
+{
+    "Abstract": {
+        "foliagecolor": ["base", "main", "misc\\foliagecolor"],
+        "grasscolor": ["base", "main", "misc\\grasscolor"],
+        "particlefield": ["base", "title", "misc\\particlefield"],
+        "mapbg": ["base", "main", "misc\\mapbg"],
+        "mapicons": ["update", "title", "misc\\mapicons"],
+        "additionalmapicons": ["update", "title", "misc\\additionalmapicons"],
+        "glint": ["base", "title", "misc\\glint"],
+        "beacon_beam": ["base", "title", "misc\\beacon_beam"],
+        "pumpkinblur": ["base", "122", "misc\\pumpkinblur"],
+        "shadow": ["base", "122", "misc\\shadow"],
+        "chain_1": ["base", "122", "armor\\chain_1"],
+        "chain_2": ["base", "122", "armor\\chain_2"],
+        "diamond_1": ["base", "122", "armor\\diamond_1"],
+        "diamond_2": ["base", "122", "armor\\diamond_2"],
+        "gold_1": ["base", "122", "armor\\gold_1"],
+        "gold_2": ["base", "122", "armor\\gold_2"],
+        "iron_1": ["base", "122", "armor\\iron_1"],
+        "iron_2": ["base", "122", "armor\\iron_2"],
+        "cloth_1": ["base", "title", "armor\\cloth_1"],
+        "cloth_1_b": ["base", "title", "armor\\cloth_1_b"],
+        "cloth_2": ["base", "title", "armor\\cloth_2"],
+        "cloth_2_b": ["base", "title", "armor\\cloth_2_b"],
+        "turtle_1": ["update", "title", "armor\\turtle_1"],
+        "power": ["base", "title", "armor\\power"],
+        "kz": ["update", "title", "art\\kz"]
+    }
+}

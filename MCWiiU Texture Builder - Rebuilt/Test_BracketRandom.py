@@ -53,8 +53,6 @@ class ChatGPTUniqueRandom:
         self.index += 1
         return value
 
-RegularRandom = ChatGPTUniqueRandom
-
 process = psutil.Process(os.getpid())
 
 MIN = 0 # min
@@ -64,7 +62,7 @@ RUNTIMES = None # amount of times to run (None will equal the possible values)
 PLACESMOVEDFORVISUALIZATION = 5 # how many places to move the value to the left when printing
 DOPRINTREGULAR = True # print regular at all
 DOPRINTBRACKET = True # print bracket at all
-PRINTSAMPLESTEP = 1000 # amount of space between each print; how much space between sampling a value to print (1 will print all)
+PRINTSAMPLESTEP = 100 # amount of space between each print; how much space between sampling a value to print (1 will print all)
 
 possibleValues = (MAX - MIN)
 if (RUNTIMES == None):
