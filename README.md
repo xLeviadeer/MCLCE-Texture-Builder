@@ -33,6 +33,7 @@ Global.name = str(__name__)
 entry = EntryPoint(
     executedFromC=False,
     errorMode="error",
+    useComplexProcessing=False,
     processingSize=16,
     debug=False,
     
@@ -64,6 +65,9 @@ Each setting has the following meanings:
 - `processingSize`
     - controls the expected input size and output size of textures. the TB will upscale/downscale textures of incorrect sizes.
     - integers other than powers of 2 are not supported, and not tested outside of 16 - 64
+- `useComplexProcessing`
+    - controls whether to use complex processing for certain textures
+    - complex processing can result in excessively long (upwards of 8 minutes) processing times if used with large sizes (like x64 or greater)
 - `debug`
     - enables all types of logging for debugging
     - included for compadibilty with old versions of the frontend
