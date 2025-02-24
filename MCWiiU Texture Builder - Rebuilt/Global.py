@@ -5,6 +5,7 @@ from CodeLibs import Logger as log
 from CodeLibs.Logger import print
 import os
 from sys import exit
+from typing import Union
 
 # try to import Image, but if not continue running without image
 try:
@@ -49,6 +50,20 @@ outputDump = None # dump or build
 
 # the file structure (export preset) that the program will use to write files
 outputStructure = None # wiiu, modpack, (etc.)
+def getLayerVersion() -> Union[str, None]:
+    """Gets the layer version using the outputStructure
+
+    Returns:
+        Union[str, None]: Returns a str layer version or None if it's 1.13
+    """
+
+    match outputStructure:
+        case "switch" | "xboxOne":
+            return "1.12"
+        case "ps4":
+            return "1.14"
+        case _:
+            return None
 
 # the usb or system location to write files to (only used if not using dump mode)
 outputDrive = None # usb or sys

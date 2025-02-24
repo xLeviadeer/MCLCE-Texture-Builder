@@ -13,19 +13,20 @@ entry = EntryPoint(
     useComplexProcessing=True,
     debug=False,
     
-    inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.13.2_java",
+    inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.14_java",
     inputPathType="folder",
     inputGame="java",
-    inputVersion="1.13.2",
+    inputVersion="1.14",
     
     outputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\output",
-    outputStructureIndex=2,
+    outputStructureIndex=7,
     outputDrive="system",
 
     logging=[],
     showTracebacks=False,
     isDirectPath=True,
-    useErrorTexture=False
+    useErrorTexture=False,
+    forceDumpMode=True
 )
 
 # run entry point

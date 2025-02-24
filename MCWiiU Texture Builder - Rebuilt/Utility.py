@@ -377,3 +377,15 @@ def tupleIsPosition(tup:tuple) -> bool:
     if (len(tup) != 2) or any(not isinstance(value, int) for value in tup): # provided tuple isn't correctly formatted
         return False
     return True
+
+def wiiuType(type:str) -> str:
+    """Takes a type and removes the s from it if it exists aka gets the wiiu type
+
+    Args:
+        type (str): expected to be link type name
+
+    Returns:
+        str: type with no s at the end aka wiiu type
+    """
+
+    return type[:-1] if (type.endswith("s")) else type

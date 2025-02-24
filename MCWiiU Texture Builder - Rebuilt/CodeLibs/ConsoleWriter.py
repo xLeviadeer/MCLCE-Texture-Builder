@@ -180,7 +180,7 @@ class ModPackLocation(_WriteLocation):
     def __init__(self, name:str, section:str, addon:Path, *, mipMapLevel:int=1) -> None:
         """
         Description:
-            Base class for different write locations
+            Modpack location handler
         ---
         Arguments:
             - name : String <>
@@ -197,6 +197,28 @@ class ModPackLocation(_WriteLocation):
 
         super().__init__(section, addon, mipMapLevel=mipMapLevel)
         self.path.prepend(f"{name} Modpack")
+
+class DebugLocation(_WriteLocation):
+    def __init__(self, section:str, addon:Path, *, mipMapLevel:int=1) -> None:
+        """
+        Description:
+            Debug location; SHOULD NOT BE USED UNLESS FOR DEBUGGING
+        ---
+        Arguments:
+            - name : String <>
+                - should be set to the name of input folder
+            - section : String <>
+                - main
+                - 122
+                - title
+            - addon : String <>
+                - Path (class) for the extra addon path of the specific file
+            - mipMapLevel : Integer <1>
+                - Handling for saving MipMaps
+        """
+
+        super().__init__(section, addon, mipMapLevel=mipMapLevel)
+        self.path.prepend("Debug Pack")
 
 def generateLocation(type:str, loc:list, mipMapLevel:int=1, arg=None):
     """
@@ -224,6 +246,10 @@ def generateLocation(type:str, loc:list, mipMapLevel:int=1, arg=None):
         case "modpack":
             # arg is expected to be a name
             return ModPackLocation(arg, loc[1], Path(loc[2]), mipMapLevel=mipMapLevel)
+        case _:
+            # only for debugging, ensures output structures can be written even if their write type doesn't exist
+            return DebugLocation(loc[1], Path(loc[2]), mipMapLevel=mipMapLevel)
+
 
 class Writer():
     def __init__(self, mode:str, defaultPrepension:Path) -> None:

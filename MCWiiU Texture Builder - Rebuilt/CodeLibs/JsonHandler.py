@@ -1,8 +1,8 @@
 from CodeLibs.Path import Path
 from typing import Union
+import os
 import json
 from copy import deepcopy
-import Global
 
 # - processes -
 
@@ -45,11 +45,11 @@ def __processAndTypeCheckPath(
     if isinstance(pathOrString, Path): # if path
         if (prependCWD == True): # if CWD
             # prepend cwd and root path (no first slash)
-            pathString = pathOrString.getPathPrependTemp(Global.getMainWorkingLoc(), doFormalize=formalizePath, withFirstSlash=False)
+            pathString = pathOrString.getPathPrependTemp(os.getcwd(), doFormalize=formalizePath, withFirstSlash=False)
         else:
             pathString = pathOrString.getPath(doFormalize=formalizePath)
     elif isinstance(pathOrString, str): # if string
-        if (prependCWD == True): pathString += Global.getMainWorkingLoc() # path prepension
+        if (prependCWD == True): pathString += os.getcwd() # path prepension
         if (not pathOrString.startswith("\\")): pathString += "\\" # insert slash between path and CWD if needed
         pathString += pathOrString # path extension to CWD
     else: # incorrect
@@ -66,7 +66,9 @@ def __processAndTypeCheckPath(
     # return stringPath
     return pathString
 
-def __targetPathTypeCheck(targetPath:Union[list, tuple]) -> list:
+def __targetPathTypeCheck(
+        targetPath:Union[list, tuple]
+    ) -> list:
     # type check targetPath
     if isinstance(targetPath, str): # check if it's a string
         targetPath = [targetPath]
@@ -88,7 +90,12 @@ def __targetPathTypeCheck(targetPath:Union[list, tuple]) -> list:
     # return path
     return targetPath
 
-def __findReferenceSpaceFromTargetPath(dictionary:dict, targetPath:Union[list, tuple], *, doPrint:bool=False) -> tuple[dict, str]:
+def __findReferenceSpaceFromTargetPath(
+        dictionary:dict,
+        targetPath:Union[list, tuple], 
+        *, 
+        doPrint:bool=False
+    ) -> tuple[dict, str]:
     """
     Description:
         backend; runs through the dictionary to find the targetPath and returns reference values which can be used to assign values into the full dictionary at a dynamic amount of keys into the dictionary
@@ -122,30 +129,19 @@ def __findReferenceSpaceFromTargetPath(dictionary:dict, targetPath:Union[list, t
         # get the curr target
         currTarget = targetPath.pop(0)
         
-        # determine if key is for an array or a dictionary
-        if isinstance(currTarget, str): # string/dict targetting
-
-            # check if data is a dict (and hence matches string targeting)
-            if not isinstance(subDictionary, dict): # inversed in explanation because if it's not a dict, it must be a list
-                printMostRecent()
-                raise KeyError(f"the target, '{currTarget}' of type {type(currTarget)}, doesn't match the type requirement for targetting lists (Integer)")
-
+        if isinstance(subDictionary, dict):
             # check if target is in the dict data
             if (currTarget not in subDictionary.keys()):
                 printMostRecent()
                 raise KeyError(f"the target, '{currTarget}', could not be found in the JSON data when reading for targetPath")
-
-        else: # int/list targetting
-
-            # check if data is a list (and hence matches int targeting)
-            if not isinstance(subDictionary, list): # inversed in explanation because if it's not a list, it must be a dict
-                printMostRecent()
-                raise KeyError(f"the target, '{currTarget}' of type {type(currTarget)}, doesn't match the type requirement for targetting dictionaries (String)")
-
+        elif isinstance(subDictionary, list):
             # check if target is in the dict data
             if not (0 <= currTarget < len(subDictionary)):
                 printMostRecent()
                 raise KeyError(f"the target, '{currTarget}', is out of bounds of the read JSON list data: (of length) {len(dictionary)}")
+        else:
+            printMostRecent()
+            raise KeyError(f"the dictionary format doesn't match the target attempting to be found")
 
         # set the last data (only if write mode)
         lastDictionary = subDictionary
@@ -222,8 +218,6 @@ def __forContent(
         # return full data
         return data
 
-# - reads -
-
 def __readAll(
         pathOrString:Union[Path, str], 
         prependCWD:bool=True, 
@@ -275,6 +269,8 @@ def __readAll(
 
         # return data
         return data
+
+# - reads -
 
 def readAll(
         pathOrString:Union[Path, str], 
@@ -528,4 +524,74 @@ def castFor(
             referenceData[referenceKey] = cast(referenceData[referenceKey])
 
     # return copy dictionary after casting
+    return dictionaryCopy
+
+def referenceFor(
+        dictionary:dict, 
+        targetPath:Union[list, tuple], 
+        *, 
+        doPrint:bool=False
+    ):
+    """
+    Description:
+        gets a reference from the targetPath and returns reference values, value and the key for that value
+    ---
+    Arguments:
+        - dictionary : Dictionary <>
+            - the data to target into
+        - targetPath : List or Tuple <>
+            - a List, Tuple or string of name(s) to get to the target data
+        - doPrint : Boolean <False>
+            - prints the path for debugging
+    ---
+    Returns:
+        - a tuple of format, (dictionary reference, key for dictionary reference)
+    """
+
+    # type check dictionary
+    if not isinstance(dictionary, dict):
+        raise TypeError(f"value for variable 'dictionary' was not of type Dictionary: {type(dictionary)}")
+    
+    # type check target path
+    targetPath = __targetPathTypeCheck(targetPath)
+
+    return __findReferenceSpaceFromTargetPath(dictionary, targetPath, doPrint=doPrint)
+
+def removeFor(
+        dictionary:dict, 
+        targetPath:Union[list, tuple], 
+        *, 
+        doPrint:bool=False
+    ):
+    """
+    Description:
+        deletes the value from the given dictionary at the target path
+    ---
+    Arguments:
+        - dictionary : Dictionary <>
+            - the data to target into
+        - targetPath : List or Tuple <>
+            - a List, Tuple or string of name(s) to get to the target data
+        - doPrint : Boolean <False>
+            - prints the path for debugging
+    ---
+    Returns:
+        - a dictionary with the value removed
+    """
+
+    # type check dictionary
+    if not isinstance(dictionary, dict):
+        raise TypeError(f"value for variable 'dictionary' was not of type Dictionary: {type(dictionary)}")
+    
+    # type check target path
+    targetPath = __targetPathTypeCheck(targetPath)
+
+    # find reference and key target
+    dictionaryCopy = deepcopy(dictionary) # copied dict ensures we dont update the original dict
+    (referenceData, referenceKey) = __findReferenceSpaceFromTargetPath(dictionaryCopy, targetPath, doPrint=doPrint)
+
+    # delete
+    del referenceData[referenceKey]
+
+    # return copy
     return dictionaryCopy

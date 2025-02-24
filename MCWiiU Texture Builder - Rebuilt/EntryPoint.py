@@ -37,7 +37,8 @@ class EntryPoint():
                 logging=None,
                 isDirectPath=False, # whether or not the path is exactly the path with no excess folders or not
                 showTracebacks=False,
-                useErrorTexture=False) -> None:
+                useErrorTexture=False,
+                forceDumpMode=False) -> None:
         # function for casting with errors easily
         def cast(type:typeof, value:object, nullable:bool=False):
             errorMessage = f"could not cast variable {value} to type {type}"
@@ -87,6 +88,7 @@ class EntryPoint():
         self.logging = logging # no casting on the list, logging is also not verified that items are correct
         self.isDirectPath = cast(bool, isDirectPath)
         self.showTracebacks = cast(bool, showTracebacks)
+        self.forceDumpMode = cast(bool, forceDumpMode)
         
         Global.useErrorTexture = useErrorTexture
         Global.useComplexProcessing = cast(bool, useComplexProcessing)
@@ -101,9 +103,40 @@ class EntryPoint():
             case 1: # wiiu mod pack
                 Global.outputStructure = "modpack"
                 Global.outputDump = "build"
-            case 2: # dump mode
+            case 2: # switch
+                Global.outputStructure = "switch"
+                Global.outputDump = "build"
+            case 3: # xbox 360
+                Global.outputStructure = "xbox360"
+                Global.outputDump = "build"
+            case 4: # xbox One
+                Global.outputStructure = "xboxOne"
+                Global.outputDump = "build"
+            case 5: # ps3
+                Global.outputStructure = "ps3"
+                Global.outputDump = "build"
+            case 6: # psV
+                Global.outputStructure = "psV"
+                Global.outputDump = "build"
+            case 7: # ps4
+                Global.outputStructure = "ps4"
+                Global.outputDump = "build"
+            case 9: # dump 1.12
+                Global.outputStructure = "switch"
+                Global.outputDump = "dump"
+            case 10: # dump 1.13
                 Global.outputStructure = "wiiu"
                 Global.outputDump = "dump"
+            case 11: # dump 1.14
+                Global.outputStructure = "ps4"
+                Global.outputDump = "dump"
+            case _: # dump mode
+                Global.outputStructure = "wiiu"
+                Global.outputDump = "dump"
+
+        # check for forced dump mode
+        if (self.forceDumpMode == True):
+            Global.outputDump = "dump"
 
     # function to check versions and install status of packages and python
     def __checkPythonAndPackageVersions(self):

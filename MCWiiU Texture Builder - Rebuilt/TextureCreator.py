@@ -185,6 +185,8 @@ def translateForAllTypes():
 
         # --- WiiU Override ---
         if (wiiuOverride != False):
+            # override doesn't support variable height via layer libraries
+
             print(f"library override reference found: {type}", log.LOG)
             print("checking for wiiu override texture...", log.LOG, 1)
             wiiuImage = rd.readWiiuImage(False, f"wiiu_{wiiuType}")
@@ -231,7 +233,9 @@ def translateForAllTypes():
         if ((wiiuArr != False) and (doOverride != True)):
             # specific arr variables
             wiiuImage = rd.readWiiuImage(False, f"wiiu_{wiiuType}")
-            constructedImage = Image.new("RGBA", si.deconvertTuple(wiiuImage.size), "#ffffff00")
+            layerLibHeight = rd.readLayerLib(wiiuType, Global.getLayerVersion(), isAbstract=False, extendingName="height")
+            sheetHeight = ut.size(wiiuImage.width, layerLibHeight) if (layerLibHeight != None) else wiiuImage.size # get the height for the constructed image
+            constructedImage = Image.new("RGBA", si.deconvertTuple(sheetHeight), "#ffffff00")
             linkArr = JsonHandler.readFor("\\linking_libraries\\Base_" + Global.inputGame, type)
             currPos = [0, 0]
 
@@ -241,7 +245,7 @@ def translateForAllTypes():
 
             def cont(): # continues the sheet movement
                 currPos[0] += ut.singularSizeOnTexSheet
-                if (currPos[0] >= wiiuImage.size[0]): 
+                if (currPos[0] >= sheetHeight[0]): 
                     currPos[1] += ut.singularSizeOnTexSheet
                     currPos[0] = 0
                 

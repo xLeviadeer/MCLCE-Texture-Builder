@@ -13,6 +13,7 @@ from SizingImage import SizingImage as Image
 import SizingImage as si
 from PIL import Image as Sampling
 import math
+from copy import deepcopy
  
 # --- read errors ---
 
@@ -190,14 +191,137 @@ def duplicateImageRight(startImage, expectedWidth, expectedHeight):
         currPos += startImage.width
     return image
 
-def readWiiuLibFor(type, travel):
-    content = False
-    if (type.endswith("s")): type = type[:-1] # if there's and s at the end, get rid of it
+def readLayerLib(wiiuType:str, layerVersion:str, isAbstract:bool, extendingName:str):
+    """Reads a specific portion of a layer library
+
+    Args:
+        wiiuType (str): the wiiu type
+        layerVersion (str): the version of layer library to read (1.12 or 1.14)
+        isAbstract (bool): determines whether to read an asbtract portion or not
+        extendingName (str): what name to look for at the end of the key
+
+    Returns:
+        dict: the library or None if the library couldn't be read
+    """
+
+    # return None if layerVersion is None
+    if (layerVersion == None): return None
+
+    # try to read the removal layer (sheet)
     try:
-        content = JsonHandler.readFor("\\linking_libraries\\wiiu_" + type, travel)
-    except:
-        print(f"{type}: could not read wiiu -> {travel}", log.DEBUG)
-    return content
+        lib = JsonHandler.readFor(
+            Path(
+                "linking_libraries", 
+                f"layer_{layerVersion}"
+            ),
+            f"{wiiuType}{"_abstract" if (isAbstract == True) else ""}_{extendingName}"
+        )
+
+        # do some type checking
+        if (isAbstract == True):
+            if (extendingName == "remove") and (not isinstance(lib, list)):
+                Global.endProgram("abstract removals must be of format list")
+            elif (extendingName == "add") and (not isinstance(lib, dict)):
+                Global.endProgram("abstract additions must be of format dict")
+        else: # not abstract
+            if (extendingName == "height") and (not isinstance(lib, int)):
+                Global.endProgram("height overrides must be of format int")
+            elif (extendingName in ("add", "remove"))  and (not isinstance(lib, list)):
+                Global.endProgram("regular removals or additions must be of format list")
+
+        # return
+        return lib
+    except KeyError:
+        print(f"could not find {"REG" if (isAbstract == False) else "ABSTRACT"} {extendingName.upper()} layer library associated with {layerVersion} aka {Global.outputStructure} of type {wiiuType}", log.DEBUG)
+        return None
+
+def readWiiuLibFor(type, travel):
+    class wrapper:
+        # scoping for wiiuLib
+        wiiuLib = None
+
+        def getWiiuLibFromWrapper(self, type, travel):
+            # old method
+            self.wiiuLib = False
+            if (type.endswith("s")): type = type[:-1] # if there's and s at the end, get rid of it
+            try:
+                self.wiiuLib = JsonHandler.readFor("\\linking_libraries\\wiiu_" + type, travel)
+            except:
+                print(f"{type}: could not read wiiu -> {travel}", log.DEBUG)
+
+            # -- handle laying before returning --
+            
+            # get the layer version from the output structure
+            layerVersion = Global.getLayerVersion()
+
+            # only run layering if it's not 1.13 and was found
+            if (layerVersion != None) and (self.wiiuLib != False):
+
+                # library add/subtract function
+                def modifyLib(lib, isAbstract, doRemove:bool):
+
+                    # is list check
+                    isList = isinstance(lib, list)
+
+                    # new list (if remove then empty, if add then copy of lib)
+                    newLib = ([] if (isAbstract == False) else {}) if (doRemove == True) else deepcopy(self.wiiuLib)
+
+                    # function for adding to new lib
+                    def addToNewLib(name, value=None):
+                        # add to newLib
+                        if (isAbstract == False): # list
+                            newLib.append(name)
+                        else: # assumes dict
+                            newLib[name] = (self.wiiuLib[name] if (value == None) else value) # if value is none, default to wiiu lib value
+
+                    # get list of names from either list or dict
+                    listOfNames = lib if (isList == True) else lib.keys()
+
+                    # remove mode
+                    if (doRemove == True):
+                        # loop through the wiiu lib
+                        for wiiuName in self.wiiuLib:
+                            if (wiiuName not in listOfNames): # if it's NOT in the wiiu lib
+                                addToNewLib(wiiuName) # add to newLib
+                            elif (isAbstract == False): # pad Nones/nulls into lists
+                                addToNewLib(None)
+                    # add mode
+                    else:
+                        # loop through the list of names
+                        for currName in listOfNames:
+                            # check if the key is in the wiiu lib already
+                            if (currName in self.wiiuLib):
+                                Global.endProgram(f"layering key, '{wiiuName}', could not be added because it's already a key in the wiiu_{type} -> {travel} lib")
+                            # not already in lib
+                            else: 
+                                addToNewLib(
+                                    currName, 
+                                    (lib[currName] if (isAbstract == True) else None)
+                                    )
+                        
+                    # set wiiuLib to the new lib
+                    self.wiiuLib = newLib
+
+                # - modify libs if the associated layerLib exists exists -
+
+                # determine abstract status
+                isAbstract = (travel == "Abstract")
+                wiiuType = ut.wiiuType(type)
+
+                # for add and remove
+                for (addOrRemoveString, addOrRemoveBool) in zip(("add", "remove"), (False, True)):
+
+                    # read
+                    layerLib = readLayerLib(wiiuType, layerVersion, isAbstract, addOrRemoveString)
+
+                    # modify if it exists
+                    if (layerLib != None):
+                        modifyLib(layerLib, isAbstract, addOrRemoveBool)
+            # return from wrapper
+            return self.wiiuLib
+
+    # return
+    return wrapper().getWiiuLibFromWrapper(type, travel)
 
 def readLinkLibFor(game, travel):
     content = False
@@ -325,7 +449,9 @@ def readWiiuImage(inWiiuAbstract, name, doResize=True):
     name = f"{name}.png" if (not name.endswith(".png")) else name
     addition = None
     match (inWiiuAbstract):
-        case True: addition = "wiiu_abstract"
+        case True: 
+            if (Global.getLayerVersion() == "1.14"): addition = "ps4_abstract"
+            else: addition = "wiiu_abstract"
         case False: addition = None # exists just so what happens is obvious
         case _:
             addition = inWiiuAbstract

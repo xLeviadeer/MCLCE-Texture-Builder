@@ -61,7 +61,7 @@ module = sys.modules[__name__]
 for item in LoggerMode:
     setattr(module, item.name, item.value)
 
-def print(message: str, mode: LoggerMode=LoggerMode.PLAIN, indent: int=0):
+def print(message: str="", mode: LoggerMode=LoggerMode.PLAIN, indent: int=0):
     """
     Description:
         Print to the terminal and use "logger" settings for better debugging
