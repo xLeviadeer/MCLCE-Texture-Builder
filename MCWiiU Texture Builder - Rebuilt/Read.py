@@ -223,11 +223,16 @@ def readLayerLib(wiiuType:str, layerVersion:str, isAbstract:bool, extendingName:
                 Global.endProgram("abstract removals must be of format list")
             elif (extendingName == "add") and (not isinstance(lib, dict)):
                 Global.endProgram("abstract additions must be of format dict")
+            elif (extendingName == "replace") and (not isinstance(lib, dict)):
+                if any(not isinstance(value, dict) for value in lib.values()):
+                    Global.endProgram("abstract replacements must be of format dict with dictionaries as values")
         else: # not abstract
             if (extendingName == "height") and (not isinstance(lib, int)):
                 Global.endProgram("height overrides must be of format int")
             elif (extendingName in ("add", "remove"))  and (not isinstance(lib, list)):
                 Global.endProgram("regular removals or additions must be of format list")
+            elif (extendingName == "replace") and (not isinstance(lib, dict)):
+                Global.endProgram("abstract replacements must be of format dict")
 
         # return
         return lib
@@ -245,7 +250,8 @@ def readWiiuLibFor(type, travel):
             self.wiiuLib = False
             if (type.endswith("s")): type = type[:-1] # if there's and s at the end, get rid of it
             try:
-                self.wiiuLib = JsonHandler.readFor("\\linking_libraries\\wiiu_" + type, travel)
+                # extends the wiiu lib should never be read not the wiiu lib
+                self.wiiuLib = JsonHandler.readFor(f"\\linking_libraries\\wiiu_" + type, travel)
             except:
                 print(f"{type}: could not read wiiu -> {travel}", log.DEBUG)
 
@@ -258,46 +264,68 @@ def readWiiuLibFor(type, travel):
             if (layerVersion != None) and (self.wiiuLib != False):
 
                 # library add/subtract function
-                def modifyLib(lib, isAbstract, doRemove:bool):
+                def modifyLib(lib, isAbstract, mode:str):
 
                     # is list check
                     isList = isinstance(lib, list)
 
                     # new list (if remove then empty, if add then copy of lib)
-                    newLib = ([] if (isAbstract == False) else {}) if (doRemove == True) else deepcopy(self.wiiuLib)
+                    newLib = ([] if (isAbstract == False) else {}) if (mode == "remove") else deepcopy(self.wiiuLib)
 
                     # function for adding to new lib
-                    def addToNewLib(name, value=None):
+                    def addToNewLib(name, value=None, oldName=None):
                         # add to newLib
                         if (isAbstract == False): # list
-                            newLib.append(name)
+                            if (oldName != None): # triggers replace mode
+                                index = newLib.index(oldName)
+                                newLib.remove(oldName)
+                                print(f"removed: {oldName}")
+                                newLib.insert(index, name)
+                                print(f"added: {name}")
+                                return
+                            else: newLib.append(name) # add
                         else: # assumes dict
+                            # dictionaries can't really use replace since they are unordered (in the TBs case)
                             newLib[name] = (self.wiiuLib[name] if (value == None) else value) # if value is none, default to wiiu lib value
 
                     # get list of names from either list or dict
                     listOfNames = lib if (isList == True) else lib.keys()
 
                     # remove mode
-                    if (doRemove == True):
+                    if (mode == "remove"):
                         # loop through the wiiu lib
                         for wiiuName in self.wiiuLib:
-                            if (wiiuName not in listOfNames): # if it's NOT in the wiiu lib
+                            if (wiiuName not in listOfNames): # if it's NOT in the names list
                                 addToNewLib(wiiuName) # add to newLib
                             elif (isAbstract == False): # pad Nones/nulls into lists
                                 addToNewLib(None)
                     # add mode
-                    else:
+                    elif (mode == "add"):
                         # loop through the list of names
                         for currName in listOfNames:
                             # check if the key is in the wiiu lib already
                             if (currName in self.wiiuLib):
-                                Global.endProgram(f"layering key, '{wiiuName}', could not be added because it's already a key in the wiiu_{type} -> {travel} lib")
+                                Global.endProgram(f"layering key, '{currName}', could not be added because it's already a key in the {Global.outputStructure}_{type} -> {travel} lib")
                             # not already in lib
                             else: 
                                 addToNewLib(
-                                    currName, 
+                                    currName,
                                     (lib[currName] if (isAbstract == True) else None)
                                     )
+                    elif (mode == "replace"):
+                        # loop through the list of names
+                        for currName in listOfNames:
+                            # check if the key is in the wiiu lib already
+                            if (currName not in self.wiiuLib):
+                                Global.endProgram(f"layering key, '{currName}', could not be replaced because it's not a key in the {Global.outputStructure}_{type} -> {travel} lib")
+                            # not already in lib
+                            else: 
+                                # get values from list or dict
+                                newName = (lib[currName] if (isAbstract == False) else lib[currName]["name"])
+                                newValue = (None if (isAbstract == False) else lib[currName]["value"])
+
+                                # add
+                                addToNewLib(newName, newValue, currName)
                         
                     # set wiiuLib to the new lib
                     self.wiiuLib = newLib
@@ -309,14 +337,13 @@ def readWiiuLibFor(type, travel):
                 wiiuType = ut.wiiuType(type)
 
                 # for add and remove
-                for (addOrRemoveString, addOrRemoveBool) in zip(("add", "remove"), (False, True)):
-
+                for mode in ("add", "remove", "replace"):
                     # read
-                    layerLib = readLayerLib(wiiuType, layerVersion, isAbstract, addOrRemoveString)
+                    layerLib = readLayerLib(wiiuType, layerVersion, isAbstract, mode)
 
                     # modify if it exists
                     if (layerLib != None):
-                        modifyLib(layerLib, isAbstract, addOrRemoveBool)
+                        modifyLib(layerLib, isAbstract, mode)
             # return from wrapper
             return self.wiiuLib
 
