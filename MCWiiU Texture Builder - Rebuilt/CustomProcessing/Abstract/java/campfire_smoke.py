@@ -1,14 +1,13 @@
 from CustomProcessing import Custom
 
-class compass(Custom.Function):
+class campfire_smoke(Custom.Function):
     def createImage(self):
         return Custom.runFunctionFromPath(
             "shared", 
             "stack_textures", 
             self.wiiuName, 
-            self.type,
+            "particle",
             self.wiiuImage, 
-            True, # print recursion
-            "clock_", # name
-            True # pad zeros
+            True, 
+            "big_smoke_"
         )

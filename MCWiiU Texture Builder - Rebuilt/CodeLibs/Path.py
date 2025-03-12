@@ -60,7 +60,10 @@ class Path():
             end = len(self.path)
         self.path = self.path[start:end]
 
-    def slice(self, start=0, end=None):
+    def slice(self, start=0, end=None, doFormalize=False):
+        # formalize if doFormalize is true
+        if (doFormalize == True):
+            self.formalize()
         if (end == None): end = len(self.path)
         return Path(self.path[start:end], isRootDirectory=self.isRootDirectory) # slices and turns the path into a new path so it can be output in the correct format
     
@@ -77,20 +80,32 @@ class Path():
         else:
             self.append(path._getRaw())
 
-    def getLength(self):
+    def getLength(self, doFormalize=False):
+        # formalize if doFormalize is true
+        if (doFormalize == True):
+            self.formalize()
         return len(self.path)
 
-    def getAt(self, index):
+    def getAt(self, index, doFormalize=False):
+        # formalize if doFormalize is true
+        if (doFormalize == True):
+            self.formalize()
         return self.path[index]
     
-    def getFirst(self):
+    def getFirst(self, doFormalize=False):
+        # formalize if doFormalize is true
+        if (doFormalize == True):
+            self.formalize()
         return self.path[0]
     
     def replaceAt(self, index, string):
         self.removeAt(index)
         self.addAt(index, string)
     
-    def getLast(self):
+    def getLast(self, doFormalize=False):
+        # formalize if doFormalize is true
+        if (doFormalize == True):
+            self.formalize()
         return self.path[self.getLength() - 1]
 
     def _getRaw(self):
