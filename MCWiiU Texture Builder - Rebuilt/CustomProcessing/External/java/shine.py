@@ -14,7 +14,7 @@ class shine(Custom.Function):
             finalImage = rd.readImageSingular(self.wiiuName, "flash", "particle", ut.size(size))
         except rd.notFoundException:
             # gets the wiiu sheet (which is known to exist) and crops it down for the shine texture
-            finalImage = rd.readWiiuImage(False, f"wiiu_{(self.type if (not self.type.endswith('s')) else self.type[:-1])}").crop((32, 16, (32 + 32), (16 + 32)))
+            finalImage = rd.readWiiuImage(False, f"{Global.getLayerGame()}_{(self.type if (not self.type.endswith('s')) else self.type[:-1])}").crop((32, 16, (32 + 32), (16 + 32)))
         except rd.notx16Exception as err:
             Global.incorrectSizeErrors.append(self.wiiuName)
             finalImage = err.getImage().resize((size, size))

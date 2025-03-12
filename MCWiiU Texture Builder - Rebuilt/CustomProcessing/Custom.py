@@ -35,7 +35,7 @@ class Function(ABC):
             # however, there is no way to actually detect this
             try:
                 wiiuType = self.type[:-1] if (self.type.endswith("s")) else self.type
-                self.wiiuImage = Image.open(f"{Global.getMainWorkingLoc()}\\base_textures\\wiiu_abstract\\{wiiuType}\\{wiiuName}.png")
+                self.wiiuImage = Image.open(f"{Global.getMainWorkingLoc()}\\base_textures\\{Global.outputStructure}_abstract\\{wiiuType}\\{wiiuName}.png")
             except FileNotFoundError:
                 print("wiiuImage was set to none and an abstract image for the wiiuName couldn't be found, wiiuImage will be none in this case", log.WARNING)
                 self.wiiuImage = None

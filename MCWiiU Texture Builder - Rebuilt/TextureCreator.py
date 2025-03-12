@@ -27,7 +27,7 @@ from CodeLibs.Path import Path
 import CustomProcessing
 import math
 
-def getProcessingLengthDict(game):
+def getProcessingLengthDict(game):    
     print(f"process length", log.SECTION)
 
     length = {
@@ -189,7 +189,7 @@ def translateForAllTypes():
 
             print(f"library override reference found: {type}", log.LOG)
             print("checking for wiiu override texture...", log.LOG, 1)
-            wiiuImage = rd.readWiiuImage(False, f"wiiu_{wiiuType}")
+            wiiuImage = rd.readWiiuImage(False, f"{Global.getLayerGame()}_{wiiuType}")
 
             overrideImage = Image.new("RGBA", ut.size(ut.singularSizeOnTexSheet), "#ffffff00") # scoping
             try:
@@ -232,12 +232,14 @@ def translateForAllTypes():
         # --- WiiU Sheet ---
         if ((wiiuArr != False) and (doOverride != True)):
             # specific arr variables
-            wiiuImage = rd.readWiiuImage(False, f"wiiu_{wiiuType}")
-            layerLibHeight = rd.readLayerLib(wiiuType, Global.getLayerVersion(), isAbstract=False, extendingName="height")
-            sheetHeight = ut.size(wiiuImage.width, layerLibHeight) if (layerLibHeight != None) else wiiuImage.size # get the height for the constructed image
-            constructedImage = Image.new("RGBA", si.deconvertTuple(sheetHeight), "#ffffff00")
+            wiiuImage = rd.readWiiuImage(False, f"{Global.getLayerGame()}_{wiiuType}")
             linkArr = JsonHandler.readFor("\\linking_libraries\\Base_" + Global.inputGame, type)
             currPos = [0, 0]
+
+            # constructed image and height
+            layerLibHeight = rd.readLayerLib(wiiuType, Global.getLayerVersion(), isAbstract=False, extendingName="height")
+            sheetHeight = ut.size(wiiuImage.width, si.convertInt(layerLibHeight)) if (layerLibHeight != None) else wiiuImage.size
+            constructedImage = Image.new("RGBA", si.deconvertTuple(sheetHeight), "#ffffff00")
 
             def getWiiuImageForCurrTex(): # function that will get the current texture sheet position's texture 
                 wiiuSheetLoc = (currPos[0], currPos[1], currPos[0] + ut.singularSizeOnTexSheet, currPos[1] + ut.singularSizeOnTexSheet)
@@ -315,6 +317,15 @@ def translateForAllTypes():
                 wiiuImage = rd.readWiiuImage(True, f"{wiiuType}\\{ut.getWiiuNameFromAbstract(wiiuAbstract[wiiuName][2])}")
                 wiiuLoc = wiiuAbstract[wiiuName]
                 linkName = linkAbstract[wiiuName]
+
+                # dump name handling (wiiuLoc length of 4)
+                if (len(wiiuLoc) == 4): # use wiiu abstract file for custom name
+                    wiiuImage = rd.readWiiuImage(True, Path(wiiuType, wiiuLoc[3]).getPath(withFirstSlash=False))
+                    if (Global.outputDump == "dump"): # write into dump pack with custom name
+                        path = Path(wiiuLoc[2])
+                        path.formalize()
+                        path.replaceAt((path.getLength() - 1), wiiuLoc[3])
+                        wiiuLoc[2] = path.getPath(withFirstSlash=False)                    
                 
                 # try/except for throwing readErrors
                 try: # run checks on linkLib
@@ -404,15 +415,23 @@ def generateWiiuTextures():
         # variables 
         wiiuAbstract = rd.readWiiuLibFor(type, ["Abstract"])
         wiiuLoc = rd.readWiiuLibFor(type, ["Loc"])
+        cropHeight = rd.readLayerLib(ut.wiiuType(type), Global.getLayerVersion(), isAbstract=False, extendingName="height")
+        fullSheetHeight = None
 
+        def croppedSheet(sheet:Image):
+            if (cropHeight != None):
+                sheet = sheet.crop((0, 0, si.deconvertInt(sheet.width), int((cropHeight / fullSheetHeight) * sheet.height)))
+            return sheet
         # WiiU Arr (sheet) processing
         try:
-            wiiuSheet = rd.readWiiuImage(False, f"wiiu_{type}")
+            wiiuSheet = rd.readWiiuImage(False, f"{Global.getLayerGame()}_{type}")
+            fullSheetHeight = wiiuSheet.height
+            wiiuSheet = croppedSheet(wiiuSheet)
         except FileNotFoundError:
             # not found files are allowed for sheets
-            print(f"wiiu_{type}: NOT found sheet", log.DEBUG, 1)
+            print(f"{Global.getLayerGame()}_{type}: NOT found sheet", log.DEBUG, 1)
         else:
-            print(f"wiiu_{type}: found sheet", log.DEBUG, 1)
+            print(f"{Global.getLayerGame()}_{type}: found sheet", log.DEBUG, 1)
             writer.writeImage( # write orignal
                 wiiuSheet,
                 generateLocation(Global.outputStructure, wiiuLoc, arg=_modPackName),
@@ -420,41 +439,43 @@ def generateWiiuTextures():
             )
 
             # mipmap writing and generation
-            if (type == "block"): # custom handling for block mipMaps since they can be copied instead of generated sometimes
-                if (si.processingSize == 32): # shift mipmaps up (still use mipmap2)
+            # custom handling for block mipMaps since they can be copied instead of generated sometimes 
+            if (type == "block") and (si.processingSize == 32): # shift mipmaps up (still use mipmap2)
                     writer.writeImage(
-                        wiiuSheet, 
-                        generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=2, arg=_modPackName), 
-                        type
-                        )
-                    writer.writeImage(
-                        rd.readWiiuImage("wiiu_mipmaps", f"wiiu_{type}2"), 
+                        croppedSheet(
+                            rd.readWiiuImage(f"{Global.getLayerGame()}_mipmaps", f"{Global.getLayerGame()}_{type}2")
+                        ), 
                         generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=3, arg=_modPackName), 
                         type
-                        )
-                elif (si.processingSize != 16): # create new mipmaps (completely custom)
+                    )
                     writer.writeImage(
-                        wiiuSheet.resize((int(wiiuSheet.width / 2), int(wiiuSheet.height / 2)), doResize=False), 
-                        generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=2, arg=_modPackName), 
-                        type
-                        )
-                    writer.writeImage(
-                        wiiuSheet.resize((int(wiiuSheet.width / 4), int(wiiuSheet.height / 4)), doResize=False), 
+                        croppedSheet(
+                            rd.readWiiuImage(f"{Global.getLayerGame()}_mipmaps", f"{Global.getLayerGame()}_{type}3")
+                        ), 
                         generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=3, arg=_modPackName), 
                         type
-                        )
-                else: # use original mipmaps
+                    )
                     writer.writeImage(
-                        rd.readWiiuImage("wiiu_mipmaps", f"wiiu_{type}2"), 
+                        wiiuSheet.resize((int(wiiuSheet.width / 8), int(wiiuSheet.height / 8)), doResize=False), 
+                        generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=4, arg=_modPackName), 
+                        type
+                    )
+            elif (type == "block") and (si.processingSize == 16): # use original mipmaps
+                    writer.writeImage(
+                        croppedSheet(
+                            rd.readWiiuImage(f"{Global.getLayerGame()}_mipmaps", f"{Global.getLayerGame()}_{type}2")
+                        ), 
                         generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=2, arg=_modPackName), 
                         type
-                        )
+                    )
                     writer.writeImage(
-                        rd.readWiiuImage("wiiu_mipmaps", f"wiiu_{type}3"), 
+                        croppedSheet(
+                            rd.readWiiuImage(f"{Global.getLayerGame()}_mipmaps", f"{Global.getLayerGame()}_{type}3")
+                        ), 
                         generateLocation(Global.outputStructure, wiiuLoc, mipMapLevel=3, arg=_modPackName), 
                         type
-                        )
-            else:
+                    )
+            else: # generate mipmaps
                 _writeMipMaps(wiiuSheet, type, wiiuLoc)
 
             Global.bar.stepCustom(Global.processingLength["type"][type]) # compensates the movement of the bar for this section
@@ -462,6 +483,16 @@ def generateWiiuTextures():
         # WiiU Abstract processing
         for wiiuName in wiiuAbstract:
             currLoc = wiiuAbstract[wiiuName]
+
+            # dump name handling (wiiuLoc length of 4)
+            if isinstance(currLoc, list) and (len(currLoc) == 4): # use wiiu abstract file for custom name
+                wiiuImage = rd.readWiiuImage(True, Path(type, currLoc[3]).getPath(withFirstSlash=False))
+                if (Global.outputDump == "dump"): # write into dump pack with custom name
+                    path = Path(currLoc[2])
+                    path.formalize()
+                    path.replaceAt((path.getLength() - 1), currLoc[3])
+                    currLoc[2] = path.getPath(withFirstSlash=False)
+
             try:
                 wiiuImage = rd.readWiiuImage(True, f"{type}\\{ut.getWiiuNameFromAbstract(currLoc[2])}")
             except FileNotFoundError:

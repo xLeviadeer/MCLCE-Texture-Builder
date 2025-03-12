@@ -64,6 +64,15 @@ def getLayerVersion() -> Union[str, None]:
             return "1.14"
         case _:
             return None
+def getLayerGame() -> Union[str, None]:
+    """Gets the layer game using the outputStructure
+
+    Returns:
+        Union[str, None]: Returns a str layer string or None if it's a 1.13 equivalent
+    """
+
+    if (outputStructure == "ps4"): return outputStructure
+    else: return "wiiu"
 
 # the usb or system location to write files to (only used if not using dump mode)
 outputDrive = None # usb or sys
