@@ -234,11 +234,6 @@ class EntryPoint():
             else: # logging false and no logging types
                 log.disableAll(log.EXIT)
 
-        # check of the version is within the supported window
-        if (compareVersions(self.inputVersion, supportedVersions[self.inputGame]["min"], direction=False) 
-            or compareVersions(self.inputVersion, supportedVersions[self.inputGame]["max"], direction=True)):
-            Global.endProgram(f"version ({self.inputVersion}) too young or old; version not within the supported versions: {".".join(map(str, supportedVersions[self.inputGame]["min"]))} to {".".join(map(str, supportedVersions[self.inputGame]["max"]))}")
-
         # WIIU TEXTURE GENERATION
         if (self.inputGame == "wiiu"):
             Global.inputPath = "WiiU Default"
@@ -294,6 +289,12 @@ class EntryPoint():
                 Global.bar.run(lambda: Runner())
         # TRANSLATIONAL TEXTURE GENERATION
         else:
+            # check of the version is within the supported window
+            if (compareVersions(self.inputVersion, supportedVersions[self.inputGame]["min"], direction=False) 
+                or compareVersions(self.inputVersion, supportedVersions[self.inputGame]["max"], direction=True)):
+                Global.endProgram(f"version ({self.inputVersion}) too young or old; version not within the supported versions: {".".join(map(str, supportedVersions[self.inputGame]["min"]))} to {".".join(map(str, supportedVersions[self.inputGame]["max"]))}")
+
+
             # definitions
             troubleLocatingErrorMessage = "Something went wrong, please try the following before contacting support with the \"help\" button\nIs your input path incorrect?\n\nERROR: pathNotFound - "
             extTempPath = f"{Global.getMainWorkingLoc()}\\extraction_temporary"
