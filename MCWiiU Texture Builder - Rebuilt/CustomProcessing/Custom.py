@@ -35,9 +35,9 @@ class Function(ABC):
             # however, there is no way to actually detect this
             try:
                 wiiuType = self.type[:-1] if (self.type.endswith("s")) else self.type
-                self.wiiuImage = Image.open(f"{Global.getMainWorkingLoc()}\\base_textures\\{Global.outputStructure}_abstract\\{wiiuType}\\{wiiuName}.png")
+                self.wiiuImage = Image.open(f"{Global.getMainWorkingLoc()}\\base_textures\\{Global.getLayerGame()}_abstract\\{wiiuType}\\{wiiuName}.png")
             except FileNotFoundError:
-                print("wiiuImage was set to none and an abstract image for the wiiuName couldn't be found, wiiuImage will be none in this case", log.WARNING)
+                print(f"wiiuImage was set to none and an abstract image for the wiiuName ({wiiuName}) couldn't be found, wiiuImage will be none in this case", log.WARNING)
                 self.wiiuImage = None
         else:
             self.wiiuImage = wiiuImage
@@ -231,8 +231,6 @@ def runFunctionFromPath(functionType:str, functionName:str, wiiuKey:str, type:st
     Returns:
         - A SizingImage proccessed by the respective custom function
     """
-
-
 
     cls = getClass(functionType, functionName)
     if isinstance(cls, SizingImage.SizingImage): return cls # if return is an image, return

@@ -146,7 +146,6 @@ def translateForAllTypes():
     """
     # function variables
     anyTexturesFound = False
-    
 
     # if storage_<loc> already exists, delete it
     storageLoc = None
@@ -400,9 +399,9 @@ def translateForAllTypes():
                         str.join("\n- ", Global.incorrectSizeErrors)
                     )
                 
-        # no found textures error
-        if (anyTexturesFound == False):
-            Global.endProgram("no textures could be found using this file directory\nIt *is* a valid directory, but no textures could be located inside of it")
+    # no found textures error
+    if (anyTexturesFound == False):
+        Global.endProgram("no textures could be found using this file directory\nIt *is* a valid directory, but no textures could be located inside of it")
     print("build completed successfully", log.NOTE)
 
 def generateWiiuTextures():

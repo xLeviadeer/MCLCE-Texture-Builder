@@ -33,6 +33,7 @@ def moveAssets(set):
 
     # find needed version and write them
     print("finding needed versions")
+    print(findNeededVersions("java"))
     JsonHandler.writeAll("\\global\\input_versions_java", findNeededVersions("java"))
     JsonHandler.writeAll("\\global\\input_versions_bedrock", findNeededVersions("bedrock"))
     print("completed; wrote needed versions")
@@ -72,6 +73,8 @@ def moveAssets(set):
     assets = {
         "base_textures\\wiiu_abstract": True,
         "base_textures\\wiiu_mipmaps": True,
+        "base_textures\\ps4_abstract": True,
+        "base_textures\\ps4_mipmaps": True,
         "base_textures\\notFound.png": False,
         "base_textures\\error.png": False,
         "base_textures\\drop_samples.png": False,
@@ -79,15 +82,22 @@ def moveAssets(set):
         "linking_libraries\\Base_bedrock.json": False,
         "linking_libraries\\version_patches_java.json": False,
         "linking_libraries\\version_patches_bedrock.json": False,
+        "linking_libraries\\layer_1.12.json": False,
+        "linking_libraries\\layer_1.14.json": False,
         "resources\\Re.ico": False,
         "global": True
     }
 
     # get supportedTypes dependant files
-    for type in SupportedTypes.supportedTypes["java"]:
-        if (os.path.exists(Global.getMainWorkingLoc() + "\\base_textures\\wiiu_" + type + ".png")): # check if the image exists before adding to assets
-            assets["base_textures\\wiiu_" + type + ".png"] = False
-        assets["linking_libraries\\wiiu_" + type + ".json"] = False
+    for game in ("wiiu", "ps4"):
+        for type in SupportedTypes.supportedTypes["java"]:
+            # if respective json/png files exist, copy them
+            pngPath = f"base_textures\\{game}_" + type + ".png"
+            jsonPath = f"linking_libraries\\{game}_" + type + ".json"
+            if (os.path.exists(Global.getMainWorkingLoc() + "\\" + pngPath)):
+                assets[pngPath] = False
+            if (os.path.exists(Global.getMainWorkingLoc() + "\\" + jsonPath)):
+                assets[jsonPath] = False
 
     # for through list
     for asset in assets:
