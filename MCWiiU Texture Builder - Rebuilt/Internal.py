@@ -482,7 +482,7 @@ def getTextures(path, mode):
             # move the incorrect export files to base_textures
             shutil.move(Global.getMainWorkingLoc() + "\\output\\assets\\minecraft\\textures", Global.getMainWorkingLoc() + "\\base_textures\\" + file.name + "_java")
         # delete output traces
-        shutil.rmtree(Global.getMainWorkingLoc() + "\\ouput\\assets")
+        shutil.rmtree(Global.getMainWorkingLoc() + "\\output\\assets")
     elif (Global.inputGame == "bedrock"):
         varPath = path + "\\MCLauncher"
         baseVersion = 6
