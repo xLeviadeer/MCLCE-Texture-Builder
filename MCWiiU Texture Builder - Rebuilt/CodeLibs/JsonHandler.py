@@ -1,8 +1,9 @@
 from CodeLibs.Path import Path
 from typing import Union
-import os
 import json
 from copy import deepcopy
+#from os import getcwd as cwd
+from Global import getMainWorkingLoc as cwd
 
 # - processes -
 
@@ -45,11 +46,11 @@ def __processAndTypeCheckPath(
     if isinstance(pathOrString, Path): # if path
         if (prependCWD == True): # if CWD
             # prepend cwd and root path (no first slash)
-            pathString = pathOrString.getPathPrependTemp(os.getcwd(), doFormalize=formalizePath, withFirstSlash=False)
+            pathString = pathOrString.getPathPrependTemp(cwd(), doFormalize=formalizePath, withFirstSlash=False)
         else:
             pathString = pathOrString.getPath(doFormalize=formalizePath)
     elif isinstance(pathOrString, str): # if string
-        if (prependCWD == True): pathString += os.getcwd() # path prepension
+        if (prependCWD == True): pathString += cwd() # path prepension
         if (not pathOrString.startswith("\\")): pathString += "\\" # insert slash between path and CWD if needed
         pathString += pathOrString # path extension to CWD
     else: # incorrect
@@ -366,7 +367,7 @@ def writeAll(
     """
 
     # type check content
-    if not isinstance(content, dict):
+    if (not isinstance(content, dict)) and (not isinstance(content, list)):
         raise TypeError(f"value for variable 'content' was not of type Dictionary: {type(formalizePath)}")
 
     # type check and process path
@@ -411,7 +412,7 @@ def writeFor(
     """
 
     # type check content
-    if not isinstance(content, dict):
+    if (not isinstance(content, dict)) and (not isinstance(content, list)):
         raise TypeError(f"value for variable 'content' was not of type Dictionary: {type(formalizePath)}")
 
     # type check and get path
@@ -461,7 +462,7 @@ def castFor(
     """
 
     # type check dictionary
-    if not isinstance(dictionary, dict):
+    if (not isinstance(dictionary, dict)) and (not isinstance(dictionary, list)):
         raise TypeError(f"value for variable 'dictionary' was not of type Dictionary: {type(dictionary)}")
     
     # type check castkeys
@@ -549,7 +550,7 @@ def referenceFor(
     """
 
     # type check dictionary
-    if not isinstance(dictionary, dict):
+    if (not isinstance(dictionary, dict)) and (not isinstance(dictionary, list)):
         raise TypeError(f"value for variable 'dictionary' was not of type Dictionary: {type(dictionary)}")
     
     # type check target path
@@ -580,7 +581,7 @@ def removeFor(
     """
 
     # type check dictionary
-    if not isinstance(dictionary, dict):
+    if (not isinstance(dictionary, dict)) and (not isinstance(dictionary, list)):
         raise TypeError(f"value for variable 'dictionary' was not of type Dictionary: {type(dictionary)}")
     
     # type check target path
