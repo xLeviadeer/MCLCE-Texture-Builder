@@ -22,6 +22,7 @@ using System.Security.Principal;
 using System.Security.Cryptography;
 using MCWiiU_Texture_Builder__Frontend;
 using Path = System.IO.Path;
+using System.Printing;
 
 namespace MCWiiU_Texture_Builder___Frontend
 {
@@ -33,7 +34,14 @@ namespace MCWiiU_Texture_Builder___Frontend
         private List<string> InputVersionsBedrock = new List<string>();
         private List<string> OutputDrives = new List<string>();
         private List<string> BuildModes = new List<string>();
-        private List<string> OutputGames = new List<string>();
+        private List<string> OutputGamesWiiu = new List<string>();
+        private List<string> OutputGamesSwitch = new List<string>();
+        private List<string> OutputGamesXB360 = new List<string>();
+        private List<string> OutputGamesXBO = new List<string>();
+        private List<string> OutputGamesPS3 = new List<string>();
+        private List<string> OutputGamesPSV = new List<string>();
+        private List<string> OutputGamesPS4 = new List<string>();
+        private List<string> CurrentOutputGames = new List<string>();
         private List<string> SizeModes = new List<string>();
         private string DocumentsPath = System.Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\Texture_Builder\\";
         private bool DontSaveDefault = false;
@@ -66,9 +74,14 @@ namespace MCWiiU_Texture_Builder___Frontend
             BuildModeCombo.SelectedIndex = 0;
 
             // write modes
-            OutputGames = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures.json");
-            OutputGameCombo = ArrayToCombo(OutputGameCombo, OutputGames);
-            OutputGameCombo.SelectedIndex = 0;
+            OutputGamesWiiu = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_wiiu.json");
+            OutputGamesSwitch = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_nintendo_switch.json");
+            OutputGamesXB360 = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_xbox360.json");
+            OutputGamesXBO = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_xbox_one.json");
+            OutputGamesPS3 = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_ps3.json");
+            OutputGamesPSV = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_psv.json");
+            OutputGamesPS4 = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\output_structures_ps4.json");
+            setOutputGameComboOptions(["all"]);
 
             // size modes
             SizeModes = JsonReadFileAsStringList(Directory.GetCurrentDirectory() + "\\python_builder\\global\\modes_size.json");
@@ -81,6 +94,52 @@ namespace MCWiiU_Texture_Builder___Frontend
             // apply the currently stored selections
             applySelections();
             DontSaveDefault = false;
+        }
+
+        // method to easily set output game options
+        private void setOutputGameComboOptions(string[] pool)
+        {
+            var toAdd = new List<string>();
+            foreach (string str in pool)
+            {
+                switch (str)
+                {
+                    case "wiiu":
+                        toAdd = toAdd.Concat(OutputGamesWiiu).ToList();
+                        break;
+                    case "nintendo switch":
+                        toAdd = toAdd.Concat(OutputGamesSwitch).ToList();
+                        break;
+                    case "xbox 360":
+                        toAdd = toAdd.Concat(OutputGamesXB360).ToList();
+                        break;
+                    case "xbox one":
+                        toAdd = toAdd.Concat(OutputGamesXBO).ToList();
+                        break;
+                    case "ps 3":
+                        toAdd = toAdd.Concat(OutputGamesPS3).ToList();
+                        break;
+                    case "ps vita":
+                        toAdd = toAdd.Concat(OutputGamesPSV).ToList();
+                        break;
+                    case "ps 4":
+                        toAdd = toAdd.Concat(OutputGamesPS4).ToList();
+                        break;
+                    case "all":
+                        toAdd = toAdd.Concat(OutputGamesWiiu)
+                            .Concat(OutputGamesSwitch)
+                            .Concat(OutputGamesXB360)
+                            .Concat(OutputGamesXBO)
+                            .Concat(OutputGamesPS3)
+                            .Concat(OutputGamesPSV)
+                            .Concat(OutputGamesPS4)
+                            .ToList();
+                        break;
+                }
+            }
+            CurrentOutputGames = toAdd;
+            OutputGameCombo.Items.Clear();
+            OutputGameCombo = ArrayToCombo(OutputGameCombo, toAdd);
         }
 
         // function for determining what game the selection is part of
@@ -350,20 +409,42 @@ namespace MCWiiU_Texture_Builder___Frontend
             if (getGame(InputGames[InputGameCombo.SelectedIndex]) == "java")
             {
                 combo = ArrayToCombo(InputVersionCombo, InputVersionsJava, "+");
+                setOutputGameComboOptions(["all"]);
                 enableWiiu();
             }
             else if (getGame(InputGames[InputGameCombo.SelectedIndex]) == "bedrock")
             {
                 combo = ArrayToCombo(InputVersionCombo, InputVersionsBedrock, "+");
+                setOutputGameComboOptions(["all"]);
                 enableWiiu();
             } else
             {
                 // else is an empty combo, so we dont have to set it, just change other properties
+                var toSelect = new List<string>();
+                switch (InputGameCombo.SelectedIndex)
+                {
+                    case 4:
+                        toSelect.Add("xbox one");
+                        toSelect.Add("nintendo switch");
+                        break;
+                    case 5:
+                        toSelect.Add("wiiu");
+                        break;
+                    case 6:
+                        toSelect.Add("xbox 360");
+                        toSelect.Add("ps 3");
+                        toSelect.Add("ps v");
+                        break;
+                    case 7:
+                        toSelect.Add("ps 4");
+                        break;
+                }
+                setOutputGameComboOptions(toSelect.ToArray());
                 disableWiiu();
             }
 
+            OutputGameCombo.SelectedIndex = 0;
             InputVersionCombo = combo;
-
             storeSelections();
         }
 
@@ -464,13 +545,21 @@ namespace MCWiiU_Texture_Builder___Frontend
             {
                 Errors.Add("No game is selected");
             }
+            if (OutputGameCombo.SelectedIndex == -1)
+            {
+                Errors.Add("No output structure was selected");
+            }
             if ((InputVersionCombo.SelectedIndex == -1) && getGame(InputGames[InputGameCombo.SelectedIndex]) != "wiiu")
             {
                 Errors.Add("No version is selected");
             }
-            if (OutputDriveCombo.SelectedIndex == -1)
+            if (!(CurrentOutputGames[OutputGameCombo.SelectedIndex].EndsWith("dump")
+                || (CurrentOutputGames[OutputGameCombo.SelectedIndex] == "wiiu modpack (sdcafiine)")))
             {
-                Errors.Add("No location is selected");
+                if (OutputDriveCombo.SelectedIndex == -1)
+                {
+                    Errors.Add("No location is selected");
+                }
             }
 
             // display errors and return if they exist
@@ -504,7 +593,7 @@ namespace MCWiiU_Texture_Builder___Frontend
                 getInputType(InputGames[InputGameCombo.SelectedIndex]), // input file/folder type (4)
                 version, // input version (5)
                 (getGame(InputGames[InputGameCombo.SelectedIndex]) != "wiiu") ? BuildModes[BuildModeCombo.SelectedIndex] : "null", // build or replace (6)
-                OutputGameCombo.SelectedIndex.ToString(), // output game index (7)
+                CurrentOutputGames[OutputGameCombo.SelectedIndex], // output game (7)
                 OutputDrives[OutputDriveCombo.SelectedIndex], // drive (8)
                 "python_builder", // location of the python file (9)
                 python_debug_mode.ToString(), // debug mode (10)
@@ -591,13 +680,20 @@ namespace MCWiiU_Texture_Builder___Frontend
 
         private void OutputGameCombo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // if dump or modpack
-            if ((OutputGames[OutputGameCombo.SelectedIndex] == "dump") 
-                || ((OutputGames[OutputGameCombo.SelectedIndex] == "wiiu modpack (sdcafiine)")))
-            { // disable
-                OutputDriveCombo.IsEnabled = false;
-                OutputDriveCombo.SelectedIndex = 0; // set drive
-            } else // not
+            if ((OutputGameCombo.SelectedIndex < CurrentOutputGames.Count) && (OutputGameCombo.SelectedIndex != -1))
+            {
+                // if dump or modpack
+                if (CurrentOutputGames[OutputGameCombo.SelectedIndex].EndsWith("dump")
+                    || (CurrentOutputGames[OutputGameCombo.SelectedIndex] == "wiiu modpack (sdcafiine)"))
+                { // disable
+                    OutputDriveCombo.IsEnabled = false;
+                    OutputDriveCombo.SelectedIndex = 0; // set drive
+                }
+                else // not
+                { // enable
+                    OutputDriveCombo.IsEnabled = true;
+                }
+            } else
             { // enable
                 OutputDriveCombo.IsEnabled = true;
             }

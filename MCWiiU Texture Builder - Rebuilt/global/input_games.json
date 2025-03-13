@@ -3,5 +3,8 @@
     "java .zip file",
     "bedrock folder",
     "bedrock .mcpack file",
-    "wiiu default textures"
+    "xbox one/nintendo switch default textures (dump only)",
+    "wiiu default textures",
+    "xbox360/ps3/psV default textures (dump only)",
+    "ps4 default textures (dump only)"
 ]
