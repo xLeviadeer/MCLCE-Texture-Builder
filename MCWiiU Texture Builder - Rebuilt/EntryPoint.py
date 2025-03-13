@@ -31,7 +31,7 @@ class EntryPoint():
                 inputGame,
                 inputVersion,
                 outputPath,
-                outputStructureIndex,
+                outputStructure,
                 outputDrive,
                 mainLoc=None,
                 logging=None,
@@ -81,7 +81,7 @@ class EntryPoint():
         self.inputVersion = cast(str, inputVersion)
 
         self.outputPath = cast(str, outputPath)
-        self.outputStructureIndex = cast(int, outputStructureIndex)
+        self.outputStructure = cast(str, outputStructure)
         self.outputDrive = cast(str, outputDrive)
 
         self.mainLoc = cast(str, mainLoc, nullable=True)
@@ -96,41 +96,35 @@ class EntryPoint():
     # output game (index) function
     def _setOutputStructure(self):
         # the key for this match can be found in the uiInput folder under "write.json"
-        match (self.outputStructureIndex):
-            case 0: # wiiu port pack
+        match (self.outputStructure):
+            case "wiiu dump":
+                Global.outputStructure = "wiiu"
+                Global.outputDump = "dump"
+            case "wiiu port pack (root directory)": 
                 Global.outputStructure = "wiiu"
                 Global.outputDump = "build"
-            case 1: # wiiu mod pack
+            case "wiiu modpack (sdcafiine)":
                 Global.outputStructure = "modpack"
                 Global.outputDump = "build"
-            case 2: # switch
+            case "switch dump": 
                 Global.outputStructure = "switch"
-                Global.outputDump = "build"
-            case 3: # xbox 360
+                Global.outputDump = "dump"
+            case "xbox 360 dump":
                 Global.outputStructure = "xbox360"
-                Global.outputDump = "build"
-            case 4: # xbox One
+                Global.outputDump = "dump"
+            case "xbox one dump":
                 Global.outputStructure = "xboxOne"
-                Global.outputDump = "build"
-            case 5: # ps3
+                Global.outputDump = "dump"
+            case "PS 3 dump":
                 Global.outputStructure = "ps3"
-                Global.outputDump = "build"
-            case 6: # psV
+                Global.outputDump = "dump"
+            case "PS vita dump":
                 Global.outputStructure = "psV"
-                Global.outputDump = "build"
-            case 7: # ps4
-                Global.outputStructure = "ps4"
-                Global.outputDump = "build"
-            case 9: # dump 1.12
-                Global.outputStructure = "switch"
                 Global.outputDump = "dump"
-            case 10: # dump 1.13
-                Global.outputStructure = "wiiu"
-                Global.outputDump = "dump"
-            case 11: # dump 1.14
+            case "PS 4 dump":
                 Global.outputStructure = "ps4"
                 Global.outputDump = "dump"
-            case _: # dump mode
+            case _: # default wiiu dump
                 Global.outputStructure = "wiiu"
                 Global.outputDump = "dump"
 

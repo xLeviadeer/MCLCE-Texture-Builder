@@ -23,7 +23,7 @@ entry = EntryPoint(
     inputVersion=args[5],
     
     outputPath=args[2],
-    outputStructureIndex=args[7],
+    outputStructure=args[7],
     outputDrive=args[8],
 
     logging=None, # enforces not printing

@@ -19,14 +19,14 @@ entry = EntryPoint(
     inputVersion="1.14",
     
     outputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\output",
-    outputStructureIndex=7,
+    outputStructure="wiiu dump",
     outputDrive="system",
 
     logging=[],
     showTracebacks=False,
     isDirectPath=True,
     useErrorTexture=False,
-    forceDumpMode=True
+    forceDumpMode=False
 )
 
 # run entry point
