@@ -378,7 +378,9 @@
                 "largechest": true,
                 "sign": "signs\\oak",
                 "christmas_double": true,
-                "trapped_double": true
+                "trapped_double": true,
+                "vex": true,
+                "vex_charging": true
             },
             "misc_abstract": {
                 "kz": true
@@ -413,7 +415,9 @@
                 "largechest": true,
                 "sign": "signs\\oak",
                 "christmas_double": true,
-                "trapped_double": true
+                "trapped_double": true,
+                "vex": true,
+                "vex_charging": true
             },
             "misc_abstract": {
                 "glint": true,
@@ -748,7 +752,9 @@
                 "largechest": true,
                 "sign": "signs\\oak",
                 "christmas_double": true,
-                "trapped_double": true
+                "trapped_double": true,
+                "vex": true,
+                "vex_charging": true
             },
             "misc_abstract": {
                 "glint": true,
@@ -784,7 +790,9 @@
                 "largechest": true,
                 "sign": "signs\\oak",
                 "christmas_double": true,
-                "trapped_double": true
+                "trapped_double": true,
+                "vex": true,
+                "vex_charging": true
             },
             "misc_abstract": {
                 "glint": true,
@@ -820,7 +828,9 @@
                 "largechest": true,
                 "sign": "signs\\oak",
                 "christmas_double": true,
-                "trapped_double": true
+                "trapped_double": true,
+                "vex": true,
+                "vex_charging": true
             },
             "misc_abstract": {
                 "glint": true,
@@ -884,6 +894,433 @@
                 "trapped_double": true
             },
             "misc_abstract": {
+                "kz": true
+            }
+        },
+        "1.20.3": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye"
+            },
+            "entity_abstract": {
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "kz": true
+            }
+        },
+        "1.20.4": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye"
+            },
+            "entity_abstract": {
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "kz": true
+            }
+        },
+        "1.20.5": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye",
+                "scute": "turtle_scute"
+            },
+            "entity_abstract": {
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "kz": true
+            }
+        },
+        "1.20.6": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye",
+                "scute": "turtle_scute"
+            },
+            "entity_abstract": {
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "kz": true
+            }
+        },
+        "1.21.1": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye",
+                "scute": "turtle_scute"
+            },
+            "entity_abstract": {
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "kz": true
+            }
+        },
+        "1.21.2": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye",
+                "scute": "turtle_scute"
+            },
+            "entity_abstract": {
+                "horse_armor_diamond": "equipment\\horse_body\\diamond",
+                "horse_armor_gold": "equipment\\horse_body\\gold",
+                "horse_armor_iron": "equipment\\horse_body\\iron",
+                "decor_black": "equipment\\llama_body\\black",
+                "decor_blue": "equipment\\llama_body\\blue",
+                "decor_brown": "equipment\\llama_body\\brown",
+                "decor_cyan": "equipment\\llama_body\\cyan",
+                "decor_gray": "equipment\\llama_body\\gray",
+                "decor_green": "equipment\\llama_body\\green",
+                "decor_light_blue": "equipment\\llama_body\\light_blue",
+                "decor_lime": "equipment\\llama_body\\lime",
+                "decor_magenta": "equipment\\llama_body\\magenta",
+                "decor_orange": "equipment\\llama_body\\orange",
+                "decor_pink": "equipment\\llama_body\\pink",
+                "decor_purple": "equipment\\llama_body\\purple",
+                "decor_red": "equipment\\llama_body\\red",
+                "decor_silver": "equipment\\llama_body\\light_gray",
+                "decor_white": "equipment\\llama_body\\white",
+                "decor_yellow": "yellow",
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "elytra": "equipment\\wings\\elytra",
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "chain_1": "equipment\\humanoid\\chainmail",
+                "chain_2": "equipment\\humanoid_leggings\\chainmail",
+                "diamond_1": "equipment\\humanoid\\diamond",
+                "diamond_2": "equipment\\humanoid_leggings\\diamond",
+                "gold_1": "equipment\\humanoid\\gold",
+                "gold_2": "equipment\\humanoid_leggings\\gold",
+                "iron_1": "equipment\\humanoid\\iron",
+                "iron_2": "equipment\\humanoid_leggings\\iron",
+                "cloth_1": "equipment\\humanoid\\leather",
+                "cloth_1_b": "equipment\\humanoid\\leather_overlay",
+                "cloth_2": "equipment\\humanoid_leggings\\leather",
+                "cloth_2_b": "equipment\\humanoid_leggings\\leather_overlay",
+                "turtle_1": "equipment\\humanoid\\turtle_scute",
+                "kz": true
+            }
+        },
+        "1.21.3": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "elytra_broken": "elytra_broken",
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye",
+                "scute": "turtle_scute"
+            },
+            "entity_abstract": {
+                "horse_armor_diamond": "equipment\\horse_body\\diamond",
+                "horse_armor_gold": "equipment\\horse_body\\gold",
+                "horse_armor_iron": "equipment\\horse_body\\iron",
+                "decor_black": "equipment\\llama_body\\black",
+                "decor_blue": "equipment\\llama_body\\blue",
+                "decor_brown": "equipment\\llama_body\\brown",
+                "decor_cyan": "equipment\\llama_body\\cyan",
+                "decor_gray": "equipment\\llama_body\\gray",
+                "decor_green": "equipment\\llama_body\\green",
+                "decor_light_blue": "equipment\\llama_body\\light_blue",
+                "decor_lime": "equipment\\llama_body\\lime",
+                "decor_magenta": "equipment\\llama_body\\magenta",
+                "decor_orange": "equipment\\llama_body\\orange",
+                "decor_pink": "equipment\\llama_body\\pink",
+                "decor_purple": "equipment\\llama_body\\purple",
+                "decor_red": "equipment\\llama_body\\red",
+                "decor_silver": "equipment\\llama_body\\light_gray",
+                "decor_white": "equipment\\llama_body\\white",
+                "decor_yellow": "yellow",
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "elytra": "equipment\\wings\\elytra",
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "chain_1": "equipment\\humanoid\\chainmail",
+                "chain_2": "equipment\\humanoid_leggings\\chainmail",
+                "diamond_1": "equipment\\humanoid\\diamond",
+                "diamond_2": "equipment\\humanoid_leggings\\diamond",
+                "gold_1": "equipment\\humanoid\\gold",
+                "gold_2": "equipment\\humanoid_leggings\\gold",
+                "iron_1": "equipment\\humanoid\\iron",
+                "iron_2": "equipment\\humanoid_leggings\\iron",
+                "cloth_1": "equipment\\humanoid\\leather",
+                "cloth_1_b": "equipment\\humanoid\\leather_overlay",
+                "cloth_2": "equipment\\humanoid_leggings\\leather",
+                "cloth_2_b": "equipment\\humanoid_leggings\\leather_overlay",
+                "turtle_1": "equipment\\humanoid\\turtle_scute",
+                "kz": true
+            }
+        },
+        "1.21.4": {
+            "block": {
+                "smooth stone_side": "smooth_stone_slab_side",
+                "smooth stone_top": "smooth_stone",
+                "grass_side_path": "dirt_path_side",
+                "grass_top_path": "dirt_path_top",
+                "grass": "short_grass"
+            },
+            "item": {
+                "elytra_broken": "elytra_broken",
+                "sign": "oak_sign",
+                "dye_red": "red_dye",
+                "dye_green": "green_dye",
+                "dye_yellow": "yellow_dye",
+                "scute": "turtle_scute"
+            },
+            "entity_abstract": {
+                "horse_armor_diamond": "equipment\\horse_body\\diamond",
+                "horse_armor_gold": "equipment\\horse_body\\gold",
+                "horse_armor_iron": "equipment\\horse_body\\iron",
+                "decor_black": "equipment\\llama_body\\black",
+                "decor_blue": "equipment\\llama_body\\blue",
+                "decor_brown": "equipment\\llama_body\\brown",
+                "decor_cyan": "equipment\\llama_body\\cyan",
+                "decor_gray": "equipment\\llama_body\\gray",
+                "decor_green": "equipment\\llama_body\\green",
+                "decor_light_blue": "equipment\\llama_body\\light_blue",
+                "decor_lime": "equipment\\llama_body\\lime",
+                "decor_magenta": "equipment\\llama_body\\magenta",
+                "decor_orange": "equipment\\llama_body\\orange",
+                "decor_pink": "equipment\\llama_body\\pink",
+                "decor_purple": "equipment\\llama_body\\purple",
+                "decor_red": "equipment\\llama_body\\red",
+                "decor_silver": "equipment\\llama_body\\light_gray",
+                "decor_white": "equipment\\llama_body\\white",
+                "decor_yellow": "yellow",
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "squid": "squid\\squid",
+                "villager_golem": "iron_golem\\iron_golem",
+                "largechest": true,
+                "sign": "signs\\oak",
+                "christmas_double": true,
+                "trapped_double": true,
+                "elytra": "equipment\\wings\\elytra",
+                "bat": true,
+                "vex": true,
+                "vex_charging": true
+            },
+            "misc_abstract": {
+                "glint": true,
+                "chain_1": "equipment\\humanoid\\chainmail",
+                "chain_2": "equipment\\humanoid_leggings\\chainmail",
+                "diamond_1": "equipment\\humanoid\\diamond",
+                "diamond_2": "equipment\\humanoid_leggings\\diamond",
+                "gold_1": "equipment\\humanoid\\gold",
+                "gold_2": "equipment\\humanoid_leggings\\gold",
+                "iron_1": "equipment\\humanoid\\iron",
+                "iron_2": "equipment\\humanoid_leggings\\iron",
+                "cloth_1": "equipment\\humanoid\\leather",
+                "cloth_1_b": "equipment\\humanoid\\leather_overlay",
+                "cloth_2": "equipment\\humanoid_leggings\\leather",
+                "cloth_2_b": "equipment\\humanoid_leggings\\leather_overlay",
+                "turtle_1": "equipment\\humanoid\\turtle_scute",
                 "kz": true
             }
         }

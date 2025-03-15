@@ -39,7 +39,7 @@ def blankImage(size=singularSizeOnTexSheet, height=None, color=(0, 0, 0, 0), doR
             - X size
         - height : Integer <size>
             - Y size
-        - color : Tuple <(0, 0, 0, 255)>
+        - color : Tuple <(0, 0, 0, 0)>
             - Determines the color of the blank image
     ---
     Returns:
@@ -389,3 +389,47 @@ def wiiuType(type:str) -> str:
     """
 
     return type[:-1] if (type.endswith("s")) else type
+
+def findAverageColor(image:Image, alpha:int=255) -> tuple[4]:
+    """Finds the average color out of an image
+
+    Args:
+        image (Image): image to find average color from
+        alpha (Integer): the alpha value to assign to the pixel (255 is opaque, 0 is colorless)
+
+    Returns:
+        tuple[4]: a color tuple of format (RBGA) padded with the alpha value (default of 255, opaque)
+    """
+    
+    # convert image
+    image = image.convert("RGBA")
+
+    averagePixel = [0] * 3
+    foundCount = 0
+
+    # add pixels
+    i = 0
+    while i < image.width:
+        j = 0
+        while j < image.height:
+            currPixel = image.getpixel((i, j))
+            if (currPixel[3] == 0):
+                j += 1
+                continue
+            # add to average pixel
+            b = 0
+            while b < 3: # only should ever include 3, no opacity
+                averagePixel[b] += currPixel[b]
+                b += 1
+            foundCount += 1
+            
+            j += 1
+        i += 1
+
+    # find average
+    foundCount = foundCount if (foundCount != 0) else 1 # sets foundcount to 1 if it's 0 (so there is no division by 0)
+    c = 0
+    while c < 3:
+        averagePixel[c] = round(averagePixel[c] / foundCount) # average each value
+        c += 1
+    return tuple(list(averagePixel) + [255])

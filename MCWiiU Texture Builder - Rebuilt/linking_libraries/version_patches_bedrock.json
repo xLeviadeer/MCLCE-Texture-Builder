@@ -45,7 +45,8 @@
                 "farmer": true,
                 "librarian": true,
                 "priest": true,
-                "smith": true
+                "smith": true,
+                "banner_illager": "banner_illager"
             }
         },
         "1.16": {
@@ -62,7 +63,8 @@
                 "librarian": true,
                 "priest": true,
                 "smith": true,
-                "pigzombie": true
+                "pigzombie": true,
+                "banner_illager": "banner_illager"
             }
         },
         "1.17": {
@@ -79,7 +81,8 @@
                 "librarian": true,
                 "priest": true,
                 "smith": true,
-                "pigzombie": true
+                "pigzombie": true,
+                "banner_illager": "banner_illager"
             }
         },
         "1.18.10": {
@@ -97,7 +100,8 @@
                 "priest": true,
                 "smith": true,
                 "pigzombie": true,
-                "villager_golem": "iron_golem\\iron_golem"
+                "villager_golem": "iron_golem\\iron_golem",
+                "banner_illager": "banner_illager"
             }
         },
         "1.19.50": {
@@ -117,7 +121,8 @@
                 "pigzombie": true,
                 "villager_golem": "iron_golem\\iron_golem",
                 "vex": true,
-                "vex_charging": true
+                "vex_charging": true,
+                "banner_illager": "banner_illager"
             }
         },
         "1.20.20": {
@@ -137,7 +142,52 @@
                 "pigzombie": true,
                 "villager_golem": "iron_golem\\iron_golem",
                 "vex": true,
-                "vex_charging": true
+                "vex_charging": true,
+                "banner_illager": "banner_illager"
+            }
+        },
+        "1.20.50": {
+            "entity_abstract": {
+                "zombie_villager": true,
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "villager": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "pigzombie": true,
+                "villager_golem": "iron_golem\\iron_golem",
+                "vex": true,
+                "vex_charging": true,
+                "banner_illager": "banner_illager",
+                "bat": true
+            }
+        },
+        "1.21.40": {
+            "entity_abstract": {
+                "zombie_villager": true,
+                "zombie_butcher": true,
+                "zombie_farmer": true,
+                "zombie_librarian": true,
+                "zombie_priest": true,
+                "zombie_smith": true,
+                "villager": true,
+                "butcher": true,
+                "farmer": true,
+                "librarian": true,
+                "priest": true,
+                "smith": true,
+                "pigzombie": true,
+                "villager_golem": "iron_golem\\iron_golem",
+                "vex": true,
+                "vex_charging": true,
+                "banner_illager": "banner_illager",
+                "bat": true
             }
         }
     }

@@ -26,7 +26,7 @@ class kelp_process(Custom.Function):
     def processKelpSubImage(self, image):
         alphaImage = ut.blankImage(image.size, doResize=False)
         image = image.convert("RGBA")
-        averageColor = self.findAverageColor(image)
+        averageColor = ut.findAverageColor(image, 0)
 
         i = 0
         while (i < image.width):
@@ -102,37 +102,6 @@ class kelp_process(Custom.Function):
 
         return newImage
 
-    def findAverageColor(self, image):
-        averagePixel = [0] * 3
-        foundCount = 0
-
-        # add pixels
-        i = 0
-        while i < image.width:
-            j = 0
-            while j < image.height:
-                currPixel = image.getpixel((i, j))
-                if (currPixel[3] == 0):
-                    j += 1
-                    continue
-                # add to average pixel
-                b = 0
-                while b < 3: # only should ever include 3, no opacity
-                    averagePixel[b] += currPixel[b]
-                    b += 1
-                foundCount += 1
-                
-                j += 1
-            i += 1
-
-        # find average
-        foundCount = foundCount if (foundCount != 0) else 1 # sets foundcount to 1 if it's 0 (so there is no division by 0)
-        c = 0
-        while c < 3:
-            averagePixel[c] = round(averagePixel[c] / foundCount) # average each value
-            c += 1
-        return tuple(list(averagePixel) + [0])
-
     def deconstructImage(self, image):
         images = []
 
@@ -171,7 +140,7 @@ class kelp_process(Custom.Function):
         images = self.deconstructImage(image)
         for i in range(len(images)):
             # find the average color for this subimage
-            currAverageColor = self.findAverageColor(images[i])
+            currAverageColor = ut.findAverageColor(images[i], 0)
 
             # create background image
             bgImage = ut.blankImage(images[i].size, color=currAverageColor, doResize=False)
