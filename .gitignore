@@ -18,6 +18,9 @@ MCWiiU Texture Builder - Rebuilt/base_textures/*
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_item.png
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_particle.png
 
+# tests
+MCWiiU Texture Builder - Rebuilt/test_data/*
+
 # python builder
 MCWiiU Texture Builder - Rebuilt/python_builder/*
 

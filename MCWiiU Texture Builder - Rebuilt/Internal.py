@@ -192,7 +192,11 @@ def findNeededVersions(game):
     versionPatches = JsonHandler.readFor("\\linking_libraries\\version_patches_" + game, ["versions"])
     # sort version patches
     versionPatches = dict(sorted(versionPatches.items(), key=lambda item: [int(x) for x in item[0].split('.')]))
-    neededVersions = []
+    neededVersions = [ # starts with min version
+        ".".join( # join together with .
+            [str(num) for num in SupportedTypes.supportedVersions[game]["min"]] # cast nums to string
+        )
+    ] 
 
     previousData = None
     # for every version

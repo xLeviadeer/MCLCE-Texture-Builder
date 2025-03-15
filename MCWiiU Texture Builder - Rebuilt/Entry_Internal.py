@@ -1,4 +1,4 @@
-# runs input checks for running manageLibs
+# runs input checks for running Internal
 
 import Internal
 import Global

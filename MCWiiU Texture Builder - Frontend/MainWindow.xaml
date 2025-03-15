@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MCWiiU_Texture_Builder___Frontend" xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
-        Title="Minecraft WiiU Texture Builder 1.7" 
+        Title="Minecraft WiiU Texture Builder 1.8" 
         Height="593.75" Width="531.25" 
         MinHeight="593.75" MinWidth="500" 
         MaxHeight="1484.375" MaxWidth="1328"
@@ -46,10 +46,9 @@
                 <ColumnDefinition Width="3*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" FontSize="20" FontFamily="Arial Rounded MT Bold" Margin="5,5,5,5" VerticalAlignment="Center" HorizontalAlignment="Left">
-                <Run Foreground="#FF457F3C" Text="Minecraft"/>
-                <Run Text=" "/><Run Foreground="#FF909090" Text="Wii"/>
-                <Run Text=""/><Run Foreground="#FF3FBDFF" Text="U"/>
-                <Run Text=""/><Run Foreground="Black" Text="Texture Builder"/>
+                <Run Foreground="#FF457F3C" Text="Minecraft "/>
+                <TextBlock FontSize="20" FontFamily="Arial Rounded MT Bold" VerticalAlignment="Center" xml:space="preserve"><Run Foreground="#ff4554" Text="L"/><Run Foreground="#006FCD" Text="C"/><Run Foreground="#0e7a0d" Text="E"/></TextBlock>
+                <Run Foreground="Black" Text="Texture Builder"/>
             </TextBlock>
             <Image Grid.Column="1" Source="/LeRe.png" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,0,10,5"/>
         </Grid>
