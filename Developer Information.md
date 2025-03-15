@@ -96,7 +96,7 @@ Each setting has the following meanings:
     - whether to force the program to output in dump mode regardless of the build/dump status.
 
 ## Looking to Add Support for Later Versions of Minecraft?
-Reference the more in-depth walkthrough of how the TB works [here]() to help develop this program.
+Reference the more in-depth walkthrough of how the TB works [here](https://github.com/xLeviadeer/MCWiiU-Texture-Builder/blob/main/Adding%20CustomProcesses.md) to help develop this program.
 
 ## Programmer Information
 ### Warning About Internal Paths

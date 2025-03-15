@@ -7,4 +7,4 @@ The MCLCE Texture Builder is a texture conversion tool to convert textures from 
 - [ ] option to use and generate for xBR upscaling
 
 ## Looking to Develop?
-Access the [Developer Information]() file for more information about development.
+Access the [Developer Information](https://github.com/xLeviadeer/MCWiiU-Texture-Builder/blob/main/Developer%20Information.md) file for more information about development.
