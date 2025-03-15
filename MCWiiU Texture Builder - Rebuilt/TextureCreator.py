@@ -197,21 +197,23 @@ def translateForAllTypes():
                 # type passed is the base type
                 # no wiiu image is passed
                 overrideImage = CustomProcessing.Custom.runFunctionFromPath("override", wiiuOverride, wiiuOverride, type, None)
-                #overrideImage = manageImgs.override(type, wiiuOverride) # try to read the image
+                if (overrideImage != False):
+                    anyTexturesFound = True
             except rd.notFoundException: # use wiiu image
                 print(f"using wiiu texture for override: {wiiuOverride}", log.WARNING, 1)
                 overrideImage = wiiuImage
             except rd.notx16Exception as err: # resize the image
                 Global.incorrectSizeErrors.append(wiiuType)
                 overrideImage = err.getImage().resize(wiiuImage.size, doResize=False)
+                anyTexturesFound = True
             except rd.notExpectedException: # place error image
                 Global.notExpectedErrors.append(wiiuType)
                 overrideImage = Global.notFoundImage.resize(wiiuImage.size, doResize=False)
-            
+                anyTexturesFound = True
+
             if (overrideImage != False): # if an override will occur (do override, else just continue normally)
                 print("override texture found, texture compensated", log.LOG, 1)
                 doOverride = True
-                anyTexturesFound = True
 
                 # compensate for the missing textures from the override
                 # save image
@@ -264,7 +266,9 @@ def translateForAllTypes():
                 try: # run checks on translatedTex
                     if (translatedTex == True): # run an external function
                         finalImage = CustomProcessing.Custom.runFunctionFromPath("external", CustomProcessing.Custom.formatName(currTex), currTex, type, getWiiuImageForCurrTex())
-                        anyTexturesFound = True
+                        if (currTex != "shine"): 
+                            # shine is not allowed to contribute to the anyTexturesFound state because it must return a specially sized, external wiiuImage when it fails
+                            anyTexturesFound = True
                     elif (translatedTex == False): # get wiiu texture
                         print(f"using wiiu texture: {currTex}", log.LOG)
                         finalImage = getWiiuImageForCurrTex()

@@ -24,29 +24,34 @@ class banner_atlas(Custom.Function):
 
                 i += 1
         else: # later than 1.15 or same
+            bannerCls = Custom.getClass("shared", "banner_process") # cls instance for getting banner size data
             patternNames = ["base", "border", "bricks", "circle", "creeper", "cross", "curly_border", "diagonal_left", "diagonal_right", 
                             "diagonal_up_left", "diagonal_up_right", "flower", "gradient", "gradient_up", "half_horizontal", "half_horizontal_bottom",
                             "half_vertical", "half_vertical_right", "mojang", "rhombus", "skull", "small_stripes", "square_bottom_left", 
                             "square_bottom_right", "square_top_left", "square_top_right", "straight_cross", "stripe_bottom", "stripe_center",
                             "stripe_downleft", "stripe_downright", "stripe_left", "stripe_middle", "stripe_right", "stripe_top", "triangle_bottom", 
                             "triangle_top", "triangles_bottom", "triangles_top"]
+            anyTexturesFound = False
             i = 0
             for name in patternNames: # stripe_downright
                 currImage = ut.blankImage(ut.mobsize)
                 try:
                     # sets the curr image with a black background
                     currImage = rd.readImageSingular(self.wiiuName, Path("banner", f"banner_{name}").getPath(), "entity", ut.mobsize)
+                    anyTexturesFound = True
                 except rd.notFoundException:
                     # uses wiiu image
                     bannerTexturesPerRow = 6
                     currImage = self.wiiuImage.crop((
-                        (i % bannerTexturesPerRow) * ut.TextureSpecifics.bannerSize[0],
-                        (i // bannerTexturesPerRow) * ut.TextureSpecifics.bannerSize[1],
-                        ((i % bannerTexturesPerRow) * ut.TextureSpecifics.bannerSize[0]) + ut.TextureSpecifics.bannerSize[0],
-                        ((i // bannerTexturesPerRow) * ut.TextureSpecifics.bannerSize[1]) + ut.TextureSpecifics.bannerSize[1] ))
+                        (i % bannerTexturesPerRow) * bannerCls.bannerSize[0],
+                        (i // bannerTexturesPerRow) * bannerCls.bannerSize[1],
+                        ((i % bannerTexturesPerRow) * bannerCls.bannerSize[0]) + bannerCls.bannerSize[0],
+                        ((i // bannerTexturesPerRow) * bannerCls.bannerSize[1]) + bannerCls.bannerSize[1] ))
                 except rd.notExpectedException:
                     Global.notExpectedErrors.append(self.wiiuName)
-                    currImage.paste(Global.notFoundImage.resize(ut.TextureSpecifics.bannerSize)) # uses error texture as the banner size
+                    currImage.paste(Global.notFoundImage.resize(bannerCls.bannerSize)) # uses error texture as the banner size
+                    anyTexturesFound = True
                 patterns.append(currImage)
                 i += 1
-        return Custom.runFunctionFromPath("shared", "banner_process", self.wiiuName, self.type, self.wiiuImage, True, patterns)
+        if (anyTexturesFound == False): raise rd.notFoundException # will trigger the "use wiiu texture" sequence and ensure the program doesn't think textures have been found
+        return Custom.runFunctionFromInstance(bannerCls(self.wiiuName, self.type, self.wiiuImage, isShared=True), True, patterns)

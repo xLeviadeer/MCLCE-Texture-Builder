@@ -51,12 +51,14 @@ class banner_atlas(Custom.Function):
             "triangles_top"
         ]
 
+        anyTexturesFound = False
         patterns = []
         i = 0
         for name in bannerNames:
             currImage = ut.blankImage(imageSize)
             try:
                 currImage = rd.readImageSingular(self.wiiuName, f"banner\\{name}", self.type, imageSize, dox16Handling=False)
+                anyTexturesFound = True
             except rd.notFoundException:
                 # uses wiiu image
                 bannerTexturesPerRow = 6
@@ -68,11 +70,14 @@ class banner_atlas(Custom.Function):
             except rd.notx16Exception as err:
                 Global.incorrectSizeErrors.append(self.wiiuName)
                 currImage = err.getImage().resize(imageSize)
+                anyTexturesFound = True
             except rd.notExpectedException:
                 Global.notExpectedErrors.append(self.wiiuName)
                 currImage.paste(Global.notFoundImage.resize(banner_process.bannerSize))
+                anyTexturesFound = True
             currImage = currImage.convert("RGBA")
             patterns.append(currImage)
             i += 1
 
+        if (anyTexturesFound == False): raise rd.notFoundException # will trigger the "use wiiu texture" sequence and ensure the program doesn't think textures have been found
         return Custom.runFunctionFromPath("shared", "banner_process", self.wiiuName, self.type, self.wiiuImage, True, patterns)

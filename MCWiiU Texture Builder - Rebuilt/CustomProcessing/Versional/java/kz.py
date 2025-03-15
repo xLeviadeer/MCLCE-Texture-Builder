@@ -152,6 +152,7 @@ class kz(Custom.Function):
         ]
 
         # read images, if an image is missing read it as the wiiu texture
+        anyTexturesFound = False
         for asset in assets:
             # find the currImage
             currImage = None
@@ -166,8 +167,12 @@ class kz(Custom.Function):
                     ), 
                     doVersionPatches=False
                 )
+                anyTexturesFound = True
             except (rd.notFoundException, rd.notExpectedException): # use wiiu image if not found or wrong size
                 currImage = wiiuSheet.extract(asset["pos"], asset["chunk"])
+            except rd.notExpectedException:
+                currImage = wiiuSheet.extract(asset["pos"], asset["chunk"])
+                anyTexturesFound = True
 
             # paste the currImage onto the newSheet
             if (asset["name"] == "back"): # paste for back
@@ -186,4 +191,5 @@ class kz(Custom.Function):
                 newSheet.insert(asset["pos"], currImage, isDestructive=True)
 
         # return
+        if (anyTexturesFound == False): raise rd.notFoundException # will trigger the "use wiiu texture" sequence and ensure the program doesn't think textures have been found
         return newSheet.getSheet()

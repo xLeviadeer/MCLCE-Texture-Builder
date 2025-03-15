@@ -20,22 +20,27 @@ class explosion(Custom.Function):
 
             currImage = Image.new("RGBA", (textureSize, textureSize), "#ffffff00")
 
+            anyTexturesFound = False
             i = 0
             while (i < amountOfTextures): # 16 is count of textures
                 top = ((i % 4) * textureSize) 
                 left = ((i // 4) * textureSize) 
                 try:
                     currImage = rd.readImageSingular(self.wiiuName, f"explosion_{str(i)}", "particle", ut.size(textureSize))
+                    anyTexturesFound = True
                 except rd.notFoundException: # uses wiiu image
                     currImage = self.wiiuImage.crop((top, left, (top + textureSize), (left + textureSize)))
                 except rd.notx16Exception as err: # resize the image as the correct size
                     Global.incorrectSizeErrors.append(self.wiiuName)
                     currImage = err.getImage().resize((textureSize, textureSize))
+                    anyTexturesFound = True
                 except rd.notExpectedException as err: # place error texture
                     Global.notExpectedErrors.append(self.wiiuName)
                     currImage = Global.notFoundImage.resize(err.getSize())
+                    anyTexturesFound = True
 
                 finalImage.paste(currImage, (top, left))
                 i += 1
 
+        if (anyTexturesFound == False): raise rd.notFoundException # will trigger the "use wiiu texture" sequence and ensure the program doesn't think textures have been found
         return finalImage

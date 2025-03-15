@@ -1,13 +1,12 @@
 from CustomProcessing import Custom
 import Utility as ut
-from Sheet import SheetExtractor
 import Read as rd
 from SizingImage import SizingImage as Image
 from CodeLibs.Path import Path
 import Global
 
 class vex_process(Custom.Function):
-    def createImage(self, *args):
+    def createImage(self, args):
         # read
         linkImage = rd.readImageSingular( # get the image based on game and vex texture
             self.wiiuName, 
@@ -18,7 +17,7 @@ class vex_process(Custom.Function):
             "entity",
             ut.size(ut.mobside / 2),
             False # ignores version patches
-            )
+        )
         
         # move and resize
         wiiuImage = ut.blankImage(64)

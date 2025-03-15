@@ -30,9 +30,11 @@ class stack_textures(Custom.Function):
         wiiuImageAsSheet = None
 
         # find the highest texture number
+        path = Path(Global.inputPath, self.type, isRootDirectory=True).getPath()
+        if (not os.path.isdir(path)): raise rd.notFoundException # will not be able to read from the list of textures
         amountOfTextures = max([
             int(os.path.splitext(file.name)[0].replace(name, ""))
-            for file in os.scandir(Path(Global.inputPath, self.type, isRootDirectory=True).getPath()) 
+            for file in os.scandir(path) 
             if (file.is_file()) and (file.name.startswith(name))
         ]) + 1 # running it with this + 1 makes it the same as calling len() but max has better error raising for my needs
             

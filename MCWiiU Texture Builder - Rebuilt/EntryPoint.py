@@ -124,9 +124,8 @@ class EntryPoint():
             case "PS 4 dump":
                 Global.outputStructure = "ps4"
                 Global.outputDump = "dump"
-            case _: # default wiiu dump
-                Global.outputStructure = "wiiu"
-                Global.outputDump = "dump"
+            case _:
+                Global.endProgram("EntryPoint's outputStructure wasn't set to a valid value")
 
         # check for forced dump mode
         if (self.forceDumpMode == True):
