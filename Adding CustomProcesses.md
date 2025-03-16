@@ -64,7 +64,7 @@ where `wiiuName` is the exact wiiu key for your associated texture (with space t
 The code inside of createImage is expected to return a completed image after all conversions.
 
 Some important notes are as follows
-* since libary references are changed/set to true other than a string value the program has no known path from where to read the java/bedrock texture from. Reading of files is handled on a per-custom function basis; you will need to read the file manually inside the code.
+* since library references are changed/set to true other than a string value the program has no known path from where to read the java/bedrock texture from. Reading of files is handled on a per-custom function basis; you will need to read the file manually inside the code.
 * your custom function class can contain any other additional functions you want to add, but createImage must exist and return the completed image; createImage the entry point and exit point for custom processes.
 
 ## Custom Process Conventions and Implementaion Details
