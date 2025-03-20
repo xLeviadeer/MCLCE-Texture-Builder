@@ -98,6 +98,41 @@ import Global
 print(Global.inputGame)
 ```
 
+### Printing with Logger
+The TB runs all prints through the `Logger.py` module as long as the following import statements are used.
+```py
+from CodeLibs.Logger import Logger as log
+from CodeLibs.Logger import print
+```
+The `Logger.py` module offers printing logs with an associated "type". A list of types is found in the `Logger.py` file under the `LoggerMode(Enum)` class. These types can be enabled or disabled in the `EntryPoint` in a list as the `logging` argument. Each type has a different print style and set of settings for it.
+
+The following is a code example of printing using `Logger.py`
+```py
+from CodeLibs.Logger import Logger as log
+from CodeLibs.Logger import print
+
+print("Test", log.CHANNELONE) # first print statement
+print("Test", log.CHANNELONE, 1) # second print statement
+print("Test", log.CHANNELTWO) # third print statement
+print("test") # fourth print statement
+```
+All the print statements will print "test" somewhere int he message. Print types, `CHANNELONE`, `CHANNELTWO` and `CHANNELTHREE` are print channels that are left empty intended for debugging and later being changed to more fitting types (you can use these types for debugging). Each channel has a slightly different print format. 
+
+1. The first print statement prints "    +Test" (with 4 leading spaces).
+2. The second print statement prints "     +Test" (with 5 leading spaces). This prints an extra leading space because of the 1 argument. Only some logger types can be intended like this.
+3. The third print statement prints "   ++Test" (with 3 leading spaces).
+4. The fourth print statement prints "Test" (with nothing added). It uses the default, `PLAIN` type. This should be avoided unless quickly debugging and removing it afterwards.
+
+The following is a code snippet of a list of logger types that could be used in the `EntryPoint` for enabling certain print types. Some print types are enabled by default, including `CHANNELONE`, `CHANNELTWO` and `CHANNELTHREE`.
+```py
+from CodeLibs.Logger import Logger as log
+
+# ...
+logging=[log.CUSTOMFUNCTION, log.CUSTOMFUNCTIONRECURSION],
+# ...
+```
+This could would explicitly enable the `CUSTOMFUNCTION` and `CUSTOMFUNCTIONRECURSION`'s types when entering the program.
+
 ### Creating a Blank Image
 Sometimes a blank image of a particular color and size is needed. This can generated using the `Utlity.blankImage()` function. 
 ```py
@@ -190,6 +225,118 @@ class wiiuName(Custom.Function):
         )
         return image
 ```
+
+### Custom Error Handling
+The TB has default error handling for image processing failiures, "fallback handling". This is the behavior that runs for the following scenarios by default:
+* the image attempting to be read is not of the expected size it's supposed to be
+    * the image is size 20x20 when it's supposed to be 16x16.
+* the image attempting to be read was not found or didn't exist
+However, this behavior can be handled on a per-custom process basis as well if the specific method would benefit from handling the errors in-method. 
+
+An example of when it would be a good idea to do this is when running a custom process for an atlas of texturs, where, if some textures are missing or missized but not all of them, the image should still construct itself using partially the correct images or otherwise process the incorrect images into correct images. In this case, the fallback handling would simply error the entire texture if any one of the textures could not be found or was not the right size. But handling each error case in-method (for the custom process) allows the TB to more robustly convert this texture.
+
+The TB can raise (throw) 3 potential errors when reading an image. These errors are contained in the `Read.py` file as `Read.notFoundException`, `Read.notx16Exception` and `Read.notExpectedException`. Each of these errors is raised in different, and very specific, scenarios and understanding it fully is crucial in properly handling each error.
+
+It's **important** to note that using `Utility.readImageSingular()` will automatically handle `Read.notx16Exception`s by resizing the images down to the correct size unless the argument `dox16Handling` is set to false. The default value for this argument is true.
+
+#### Not Found Exception - `notFoundException`
+`notFoundException`, "not found error" is thrown under the following conditions:
+* the texture builder attempted to read a file and found the texture
+* the read texture was not the same size as the expected size
+    * the size of the texture was not of the same aspect ratio as the expected size
+* `Global.errorMode` is set to `"error"`
+The default handling of a `notFoundException` is to place a "notFound" texture on the image. The notFound image can be found as `Global.notFoundImage` and is of size x16. This means the notFound image may need to be rescaled before placement.
+
+When a `notFoundException` is thrown it's type lib name should be added to the corresponding global errors list. This is so that when textures encounter errors they are put into the errors document which lists problematic textures out when the program is finished running. The list for `notFoundException` is `Global.notExpectedErrors` which should be `.append()`'ed to with `self.wiiuName` if this is inside of a custom process (`Global.notExpectedErrors.append(self.wiiuName)`).
+
+The following is a code example of placing an error image and appending the the global errors lib.
+```py
+import Read as rd
+import Global
+# ...
+
+# try block here
+except rd.notFoundException:
+    Global.notExpectedErrors.append(self.wiiuName)
+    image = Global.notFoundImage.resize(self.wiiuImage.size, doResize=False)
+```
+
+#### Not x16 Exception - `notx16Exception`
+`notx16Exception`, "x16 error" is thrown under the following conditions:
+* the texture builder attempted to read a file and found the texture
+* the read texture was not the same size as the expected sie
+    * the size was not the same size as the expected size
+* `Global.errorMode` is set to `"replace'`
+The default handling of `notx16Exception` is to resize the texture to be the expected size and then continue processing with this new image.
+
+When a `notx16Exception` is thrown it's type lib name should be added to the corresponding global errors list. This is so that when textures encounter errors they are put into the errors document which lists problematic textures out when the program is finished running. The list for `notx16Exception` is `Global.incorrectSizeErrors` which should be `.append()`'ed to with `self.wiiuName` if this is inside of a custom process (`Global.incorrectSizeErrors.append(self.wiiuName)`).
+
+The following code is an example of getting the found image from the error and resizing it.
+```py
+import Read as rd
+import Global
+# ...
+
+# try block here
+except rd.notx16Exception as err:
+    Global.incorrectSizeErrors.append(self.wiiuName)
+    image = err.getImage().resize(self.wiiuImage.size, doResize=False)
+```
+
+#### Not Expected Exception - `notExpectedException`
+`notExpectedException` is thrown under the following conditions:
+* the texture builder attempted to read a file and could NOT find the texture
+    * this could be due to the path being incorrect, the file having a different name, or the file not existing in the texture pack. However, it's assumed that the texture doesn't exist and the path and file name are correct when processing this error because both the path and file name are checked to be correct before attempting to read via `EntryPoint.py` for the file path and the version patches library system for file names.
+The default handling of `notExpectedException` is to use the wiiu image so that the file isn't missing from the finished pack. 
+
+No error name is appended for this type of exception because, again, it's assumed that the file just doesn't have a custom texture in this pack and shouldn't exist.
+
+The following code is an example of handling a `notExpectedException`.
+```py
+import Read as rd
+# ...
+
+# try block here
+except rd.notExpectedException:
+    image = self.wiiuImage
+```
+
+### Image Scaling
+The texture builder can detect images of the same aspect ratio which are powers of two and scale them up and down to be the correct size when converting textures. This is handled through the `SizingImage.py` class which contains the `SizingImage` class which wraps the needed functions of `PIL`s `Image` class with scaling support. However, this means that all images that are ever read go through scaling changes. 
+
+To ensure all images can be properly processed as sized it's recommended to use the following import statements, where `Image` is called for image processes and `si` is called for image sizing processes
+```py
+import SizingImage as si
+from SizingImage import SizingImage as Image
+```
+
+Changes to the reading scale of images is directly controlled by the value `si.processingSize`, however this value *should never directly be modified*, instead use the method `si.changeProcessingSize()` to change the value. This method checks if the provided value is a valid size. This value must be a power of two larger than or equal to 16 up to 64. It's possible that the TB could scale larger textures but it isn't directly supported as to avoid excessively long processing times and lack of ability for certain consoles to handle larger texture packs without crashing.
+
+The processing size can be retrieved as `si.processingSize`. This will be a pixel count value. The "multiplier" can also be retrived with `si.getMultiplier()`. This is a value to multiply the original texture by which results in it's size being the correct larger size. You can check if resizing is needed with the `si.resizingNeeded()` function which returns a boolean, true if resizing is needed.
+
+However, the aforementioned functions become almost entirely obsolete due the following features:
+
+#### Controlling Resizing During Texture Reading
+You can control whether or not an image is resized when reading an image by setting `doResize=False` (which has a default value of True) when reading an image. This means the expected size is the size that the image must be exactly (unless it automatically goes through x16 handling via the `Utility.readImageSingular()` function).
+
+This is desirable when an image being read should never be resized from x32, x64, etc.
+
+#### Modifying Sizes Before Texture Reading
+You can control the expected size of the image being read by using different `si` functions. Each function explains itself by it's name but they're listed out here regardless. *These are the functions that should be used for size handling when `doResize` is not an option*; these functions are the highest level handling for sizes outside of `doResize` and are the easiest to work with. 
+
+`si.convertInt()` - converts an integer upwards from the regular size to the modified size
+`si.deconvertInt()` - converts an integer from the modified size down the the regular size 
+`si.convertTuple()` - converts a tuple's value upwards from the regular size to the modified size
+`si.deconvertTuple()` - converts a tuple's values from the modified size down the the regular size
+
+This is desirable when an image being read should be resized only sometimes but not always from x32, x64, etc.
+
+#### So How Do I Manage Image Scaling?
+**Generally speaking, the TB will automatically handle all size differences; methods should be written with their x16 size requirements and the TB will automatically scale them in most cases.** However, sometimes the TB will have issues where a texture is compoundingly resized making it much too large or causing other processing issues. The following facts should be rememebered when troubleshooting why a custom process may be breaking when changing the processing size.
+* all wiiu images that are read are automatically upscaled. This means that a wiiu image with size x16 will be converted to an image of size x32 if the processing size is set so. This, then, means that referencing `self.wiiuImage.size` will result in a *non-constant size* that changes depending on the processing size.
+* all images read with with the `Read.py` functions will be automatically upscaled to the processing size unless `doResize` is set to false.
+
+Generally, every sizing error will fall into either of the described issues above in some form or another. Check the sizes of images during the custom process during debugging to understand where an image may be being duplicately upscaled.
 
 ### Checking Versions
 Sometimes a custom process must handle both Versional aspects and standard custom process aspects. If a texture requires both a custom process and a versional difference it's version checking must be handled inside of the associated custom process.
