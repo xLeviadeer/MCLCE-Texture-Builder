@@ -386,7 +386,7 @@ class wiiuName(Custom.Function):
         # run for every pixel
         newImage = ut.forEveryPixel(
             someImage, 
-            setEvery4OddPixelsToColor,
+            setEvery4OddPixelsToOffWhite,
             arguments=[0]
         )
 
