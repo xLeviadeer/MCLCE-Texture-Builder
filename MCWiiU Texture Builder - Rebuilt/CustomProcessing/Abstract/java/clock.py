@@ -9,6 +9,6 @@ class clock(Custom.Function):
             self.type,
             self.wiiuImage, 
             True, # print recursion
-            "compass_", # name
+            "clock_", # name
             True # pad zeros
         )
