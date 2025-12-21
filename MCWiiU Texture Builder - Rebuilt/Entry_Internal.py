@@ -131,7 +131,11 @@ match (selectedMain):
             majorUpdate = int(input("input a major update\n"))
             # minorVersion
             minorVersion = input("input a minor version (none supported)\n")
-            if (minorVersion.lower() == "none"):
+            if (
+                (minorVersion == None)
+                or (minorVersion == "")
+                or (minorVersion.lower() == "none")
+            ):
                 minorVersion = None
             else:
                 minorVersion = int(minorVersion)
