@@ -1244,7 +1244,7 @@
                 "cloth_1": "entity\\equipment\\humanoid\\leather",
                 "cloth_1_b": "entity\\equipment\\humanoid\\leather_overlay",
                 "cloth_2": "entity\\equipment\\humanoid_leggings\\leather",
-                "cloth_2_b": "entity\\quipment\\humanoid_leggings\\leather_overlay",
+                "cloth_2_b": "entity\\equipment\\humanoid_leggings\\leather_overlay",
                 "turtle_1": "entity\\equipment\\humanoid\\turtle_scute",
                 "kz": true
             }
@@ -1319,7 +1319,7 @@
                 "cloth_1": "entity\\equipment\\humanoid\\leather",
                 "cloth_1_b": "entity\\equipment\\humanoid\\leather_overlay",
                 "cloth_2": "entity\\equipment\\humanoid_leggings\\leather",
-                "cloth_2_b": "entity\\quipment\\humanoid_leggings\\leather_overlay",
+                "cloth_2_b": "entity\\equipment\\humanoid_leggings\\leather_overlay",
                 "turtle_1": "entity\\equipment\\humanoid\\turtle_scute",
                 "kz": true
             }
@@ -1414,7 +1414,7 @@
                 "cloth_1": "entity\\equipment\\humanoid\\leather",
                 "cloth_1_b": "entity\\equipment\\humanoid\\leather_overlay",
                 "cloth_2": "entity\\equipment\\humanoid_leggings\\leather",
-                "cloth_2_b": "entity\\quipment\\humanoid_leggings\\leather_overlay",
+                "cloth_2_b": "entity\\equipment\\humanoid_leggings\\leather_overlay",
                 "turtle_1": "entity\\equipment\\humanoid\\turtle_scute",
                 "kz": true
             }
@@ -1511,7 +1511,7 @@
                 "cloth_1": "entity\\equipment\\humanoid\\leather",
                 "cloth_1_b": "entity\\equipment\\humanoid\\leather_overlay",
                 "cloth_2": "entity\\equipment\\humanoid_leggings\\leather",
-                "cloth_2_b": "entity\\quipment\\humanoid_leggings\\leather_overlay",
+                "cloth_2_b": "entity\\equipment\\humanoid_leggings\\leather_overlay",
                 "turtle_1": "entity\\equipment\\humanoid\\turtle_scute",
                 "kz": true
             }
@@ -1612,7 +1612,7 @@
                 "cloth_1": "entity\\equipment\\humanoid\\leather",
                 "cloth_1_b": "entity\\equipment\\humanoid\\leather_overlay",
                 "cloth_2": "entity\\equipment\\humanoid_leggings\\leather",
-                "cloth_2_b": "entity\\quipment\\humanoid_leggings\\leather_overlay",
+                "cloth_2_b": "entity\\equipment\\humanoid_leggings\\leather_overlay",
                 "turtle_1": "entity\\equipment\\humanoid\\turtle_scute",
                 "kz": true
             }
