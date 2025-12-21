@@ -84,30 +84,17 @@ def patchForVersion(path, type, wiiuName, doCustomProcessing:bool=True): # does 
             print(f"invalid version patch formatting for \"{wiiuName}\" regarding {Global.inputVersion}", log.EXIT)
             Global.bar.close()
 
-        pathSections = str.split(variablePath, "\\")
+        # find prepending path section
+        abstractKeyword = "_abstract"
+        typeNoAbstract = ut.wiiuType(type if (not type.endswith(abstractKeyword)) else type[:-len(abstractKeyword)])
+        prependingPath = Path(
+            Global.inputPath, 
+            typeNoAbstract if (typeNoAbstract != "misc") else None, 
+            isRootDirectory=True
+        )
 
-        def findIndex():
-            index = 0
-            for section in pathSections:
-                for type in supportedTypes[Global.inputGame]:
-                    if (section == type):
-                        return index
-                index += 1
-
-        index = findIndex()
-        if (index == len(pathSections)): # checks if type was found (the index should never equal the path sections length because there would be no file to read in this case)
-            print(f"could not find type when attempting to read for: {path}", log.EXIT)
-            Global.bar.close()
-        elif (index == None): # if a type couldn't be found it must be a misc type
-            # in this case, search for "textures" and enter a replacement from there
-            index = 0
-            for section in pathSections:
-                if (section == "textures"):
-                    break
-                index += 1
-
-        joinedSections = '\\'.join(pathSections[:(index + 1)])
-        variablePath = f"{joinedSections}\\{patchName}"
+        # combine path
+        variablePath = f"{prependingPath.getPath()}\\{patchName}"
         print(f"found version patch for {wiiuName}", log.PATCHFUNCTION)
     # always return
     return variablePath
