@@ -7,7 +7,9 @@ from CodeLibs.Path import Path
 
 class banner_atlas(Custom.Function):
     def createImage(self):
+        bannerCls = Custom.getClass("shared", "banner_process") # cls instance for getting banner size data
         patterns = [] # expects patterns of x64 size (in the right (wiiu) order)
+        anyTexturesFound = False
         if (ut.checkVersion(14, direction=False)): # earlier than 1.15
             def m(value):
                 return value * 64
@@ -23,15 +25,14 @@ class banner_atlas(Custom.Function):
                 patterns.append(bannerImage.crop((m(x), m(y), (m(x) + m(1)), (m(y) + m(1)))))
 
                 i += 1
+            anyTexturesFound = True
         else: # later than 1.15 or same
-            bannerCls = Custom.getClass("shared", "banner_process") # cls instance for getting banner size data
             patternNames = ["base", "border", "bricks", "circle", "creeper", "cross", "curly_border", "diagonal_left", "diagonal_right", 
                             "diagonal_up_left", "diagonal_up_right", "flower", "gradient", "gradient_up", "half_horizontal", "half_horizontal_bottom",
                             "half_vertical", "half_vertical_right", "mojang", "rhombus", "skull", "small_stripes", "square_bottom_left", 
                             "square_bottom_right", "square_top_left", "square_top_right", "straight_cross", "stripe_bottom", "stripe_center",
                             "stripe_downleft", "stripe_downright", "stripe_left", "stripe_middle", "stripe_right", "stripe_top", "triangle_bottom", 
                             "triangle_top", "triangles_bottom", "triangles_top"]
-            anyTexturesFound = False
             i = 0
             for name in patternNames: # stripe_downright
                 currImage = ut.blankImage(ut.mobsize)
