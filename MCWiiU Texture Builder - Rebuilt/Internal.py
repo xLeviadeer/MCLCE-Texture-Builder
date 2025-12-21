@@ -680,7 +680,7 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
             version = _getVersionFromFolderName(dir.name)
             if (not checkIfOrAll(versionInput, version)): continue
             Global.inputVersion = version # temp sets version for this run
-            if (doUseBaseTextures == False) and (ut.checkVersion(13, 2, False)): continue # skips versions 1.13.2 or earlier if the base textures aren't being used
+            if (doUseBaseTextures == False) and (ut.checkVersion(13, 2, direction=False)): continue # skips versions 1.13.2 or earlier if the base textures aren't being used
             print(f"-{version}")
 
             # for each type for the game

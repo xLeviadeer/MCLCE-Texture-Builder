@@ -65,15 +65,17 @@ def size(size=singularSizeOnTexSheet, height=None):
     """
     return (int(size),) * 2 if (not height) else (int(size), int(height))
 
-def checkVersion(majorUpdate:int, minorVersion:int=0, direction:bool=True) -> bool:
+def checkVersion(majorUpdate:int, minorVersion:int=0, subVersion:int=0, direction:bool=True) -> bool:
     """
     Description: 
-        Checks the current version against the input version
+        Checks the current version against the input version, inclusive
     ---
     Arguments:
         - majorUpdate : Integer <>
         - minorVersion : Integer <0>
             - If left empty, checks against all (the latest possible) minor version 
+        - subVersion : Integer <0>
+            - If left empty, checks against all (the latest possible) sub version
         - direction : Boolean <True>
             - True: checks current version is equal or higher than input
             - False: checks current version is equal or lower than input
@@ -82,7 +84,7 @@ def checkVersion(majorUpdate:int, minorVersion:int=0, direction:bool=True) -> bo
         - Boolean
     """
     minorVersion = 0 if (minorVersion == None) else minorVersion # change minorVersion None to 0
-    return compareVersions(Global.inputVersion, [1, majorUpdate, minorVersion], direction, inclusive=True)
+    return compareVersions(Global.inputVersion, [1, majorUpdate, minorVersion, subVersion], direction, inclusive=True)
 
 def compareVersions(versionA:str, versionB:str, direction:bool=None, inclusive:bool=None) -> bool:
     """
