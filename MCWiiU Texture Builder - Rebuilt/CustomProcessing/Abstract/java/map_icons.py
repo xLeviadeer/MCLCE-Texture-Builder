@@ -228,4 +228,4 @@ class map_icons(Custom.Function):
                 y += 1
 
         # return
-            return newSheet.getSheet()
+        return newSheet.getSheet()
