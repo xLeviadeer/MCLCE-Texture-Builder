@@ -13,10 +13,10 @@ entry = EntryPoint(
     useComplexProcessing=True,
     debug=False,
     
-    inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.14_java",
+    inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.21.11_java",
     inputPathType="folder",
     inputGame="java",
-    inputVersion="1.14",
+    inputVersion="1.21.11",
     
     outputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\output",
     outputStructure="wiiu dump",

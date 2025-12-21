@@ -13,10 +13,10 @@ entry = EntryPoint(
     useComplexProcessing=True,
     debug=False,
     
-    inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.6.1.0_bedrock",
+    inputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\base_textures\\1.21.111.1_bedrock",
     inputPathType="folder",
     inputGame="bedrock",
-    inputVersion="1.6.1.0",
+    inputVersion="1.21.111",
     
     outputPath="F:\\Coding\\B- LeRe\\MCWiiU-Texture-Builder\\MCWiiU Texture Builder - Rebuilt\\output",
     outputStructure="wiiu dump",
