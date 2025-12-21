@@ -153,15 +153,11 @@ class kelp_process(Custom.Function):
         image = self.reconstructImage(images, ut.blankImage(image.size, doResize=False))
         return image
 
-    def createImage(self, *args):
+    def createImage(self, args):
         # determines which texture to use
-        readName = "" # sets the readname
-        if (Global.inputGame == "java"):
-            readName = "kelp" if (self.wiiuName == "kelp_top") else "kelp_plant"
-        elif (Global.inputGame == "bedrock"):
-            readName = "kelp_top" if (self.wiiuName == "kelp_top") else "kelp_a"
-        else:
-            Global.endProgram("kelp_process could not find the inputGame")
+        readName = args[0]
+        if (not isinstance(readName, str)):
+            Global.endProgram("kelp_process was not supplied a valid reading name")
             return
         type = "block" + ("" if (Global.inputGame == "java") else "s") # sets the type based on game
         image = rd.readImageSingular(self.wiiuName, readName, type, ut.size(16, 320))

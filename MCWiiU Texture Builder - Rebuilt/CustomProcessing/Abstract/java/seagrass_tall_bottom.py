@@ -1,10 +1,10 @@
 from CustomProcessing import Custom
 import Utility as ut
 
-class kelp_top(Custom.Function):
+class seagrass_tall_bottom(Custom.Function):
     def createImage(self):
         debug = False
-        image = Custom.runFunctionFromPath("shared", "kelp_process", self.wiiuName, self.type, self.wiiuImage, True, "kelp_top")
+        image = Custom.runFunctionFromPath("shared", "kelp_process", self.wiiuName, self.type, self.wiiuImage, True, "tall_seagrass_bottom")
         if (debug == True):
             image = ut.getImageNoOpacity(image, doZeroDetection=True) # for debugging only
         return image
