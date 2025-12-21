@@ -29,6 +29,6 @@ class cows_process(Custom.Function):
         image.paste(portionImage.crop((0, 1, 1, 7)), (52, 2)) # udder left
         image.paste(portionImage.crop((5, 1, 6, 7)), (59, 2)) # udder right
         image.paste(portionImage.crop((1, 0, 12, 1)), (54, 1)) # udder top (bottom)
-        image.paste(portionImage.crop((1, 0, 12, 1)), (54, 0)) # udder top (bottom)
+        image.paste(portionImage.crop((1, 0, 12, 1)), (54, 0)) # udder top (top)
 
         return image

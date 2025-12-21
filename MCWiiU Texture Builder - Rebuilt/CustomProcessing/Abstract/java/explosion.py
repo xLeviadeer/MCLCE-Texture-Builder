@@ -9,6 +9,7 @@ class explosion(Custom.Function):
     def createImage(self):
         sheetSize = 128 # any use of 128 refers to the size of the sheet
         finalImage = Image.new("RGBA", (sheetSize, sheetSize), "#ffffff00")
+        anyTexturesFound = False
 
         if (int(str.split(Global.inputVersion, ".")[1]) == 13):
             finalImage = rd.readImageSingular(self.wiiuName, "explosion", "entity", ut.size(sheetSize))
@@ -20,7 +21,6 @@ class explosion(Custom.Function):
 
             currImage = Image.new("RGBA", (textureSize, textureSize), "#ffffff00")
 
-            anyTexturesFound = False
             i = 0
             while (i < amountOfTextures): # 16 is count of textures
                 top = ((i % 4) * textureSize) 

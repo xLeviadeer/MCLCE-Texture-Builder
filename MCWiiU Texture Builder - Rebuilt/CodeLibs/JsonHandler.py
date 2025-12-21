@@ -51,7 +51,10 @@ def __processAndTypeCheckPath(
             pathString = pathOrString.getPath(doFormalize=formalizePath)
     elif isinstance(pathOrString, str): # if string
         if (prependCWD == True): pathString += cwd() # path prepension
-        if (not pathOrString.startswith("\\")): pathString += "\\" # insert slash between path and CWD if needed
+        if (
+            (not pathOrString.startswith("\\")) # doesn't start with slash already
+            and (not pathOrString[1] == ":") # not root implicitly
+        ): pathString += "\\" # insert slash between path and CWD if needed
         pathString += pathOrString # path extension to CWD
     else: # incorrect
         raise TypeError(f"value for variable 'pathOrString' was not of type Path or String: {type(pathOrString)}")

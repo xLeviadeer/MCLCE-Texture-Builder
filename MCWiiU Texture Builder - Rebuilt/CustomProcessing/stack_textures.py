@@ -32,11 +32,13 @@ class stack_textures(Custom.Function):
         # find the highest texture number
         path = Path(Global.inputPath, self.type, isRootDirectory=True).getPath()
         if (not os.path.isdir(path)): raise rd.notFoundException # will not be able to read from the list of textures
-        amountOfTextures = max([
+        textureNumbers = [ # get numbers from each texture
             int(os.path.splitext(file.name)[0].replace(name, ""))
             for file in os.scandir(path) 
             if (file.is_file()) and (file.name.startswith(name))
-        ]) + 1 # running it with this + 1 makes it the same as calling len() but max has better error raising for my needs
+        ]
+        if (len(textureNumbers) == 0): raise rd.notFoundException # if none were found, raise notFound
+        amountOfTextures = max(textureNumbers) + 1 # running it with this + 1 makes it the same as calling len() but max has better error raising for my needs
             
         # sheet for textures to be placed on of the size of amount of textures
         sheet = SheetExtractor(ut.size(16, (amountOfTextures * 16)), ut.size(16))

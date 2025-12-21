@@ -98,7 +98,14 @@ def patchForVersion(path, type, wiiuName, doCustomProcessing:bool=True): # does 
         if (index == len(pathSections)): # checks if type was found (the index should never equal the path sections length because there would be no file to read in this case)
             print(f"could not find type when attempting to read for: {path}", log.EXIT)
             Global.bar.close()
-                    
+        elif (index == None): # if a type couldn't be found it must be a misc type
+            # in this case, search for "textures" and enter a replacement from there
+            index = 0
+            for section in pathSections:
+                if (section == "textures"):
+                    break
+                index += 1
+
         joinedSections = '\\'.join(pathSections[:(index + 1)])
         variablePath = f"{joinedSections}\\{patchName}"
         print(f"found version patch for {wiiuName}", log.PATCHFUNCTION)

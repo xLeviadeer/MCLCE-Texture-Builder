@@ -20,6 +20,7 @@ MCWiiU Texture Builder - Rebuilt/base_textures/*
 
 # tests
 MCWiiU Texture Builder - Rebuilt/test_data/*
+MCWiiU Texture Builder - Rebuilt/Entry_Test.py
 
 # python builder
 MCWiiU Texture Builder - Rebuilt/python_builder/*
