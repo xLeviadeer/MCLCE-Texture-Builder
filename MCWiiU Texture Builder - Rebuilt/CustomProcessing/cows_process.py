@@ -33,6 +33,7 @@ class cows_process(Custom.Function):
                 fileName = f"{fileName}_v2"
         else:
             Global.endProgram("cows_process could not find inputGame")
+            return
 
         # read image
         expectedSize = ut.size(ut.mobside, ut.mobsideHalf)
