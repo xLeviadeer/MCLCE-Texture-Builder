@@ -10,5 +10,5 @@ class sheep(Custom.Function):
         sheepFurUndercoatImage = rd.readImageSingular(self.wiiuName, "sheep\\sheep_wool_undercoat", "entity", ut.size(ut.mobside, ut.mobsideHalf), doVersionPatches=False).convert("RGBA")
 
         # combine
-        sheepImage.alpha_composite(sheepFurUndercoatImage)
+        sheepImage.alpha_composite(sheepFurUndercoatImage, doResize=False)
         return sheepImage
