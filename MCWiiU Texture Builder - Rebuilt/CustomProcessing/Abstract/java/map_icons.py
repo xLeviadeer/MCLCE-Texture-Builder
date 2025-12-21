@@ -23,7 +23,7 @@ class map_icons(Custom.Function):
         # process for before 1.20.5
         if (ut.checkVersion(20, 4, direction=False)):
             # read images as sheets
-            linkSheet = SheetExtractor(Path("map_icons"), ut.size(8), self.wiiuName, "map", ut.size(128), doPrint=True)
+            linkSheet = SheetExtractor(Path("map_icons"), ut.size(8), self.wiiuName, "map", ut.size(128))
 
             # tuple of positions
             positions = None
