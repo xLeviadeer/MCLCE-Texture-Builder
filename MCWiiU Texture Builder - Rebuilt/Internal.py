@@ -754,7 +754,11 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
                             patchPath.append(dir.name, (type if (wiiuType != Global.misc) else None), linkName)
                             patchPath = rd.patchForVersion(patchPath.getPath(), type, wiiuName, doCustomProcessing=False) # turns into a string here
                             if (patchPath == None): cont(); continue # if the path uses custom processing
-                            linkImage = rd.getImage(patchPath)
+                            try:
+                                linkImage = rd.getImage(patchPath)
+                            except (rd.notFoundException):
+                                print(f"      forced to skip {wiiuName} ({linkName})")
+                                continue
 
                             # equality check
                             value = checkEquality(getWiiuImageForCurrTex(), linkImage, doTextureGeneration=doGeneration)
@@ -798,7 +802,11 @@ def checkTextureEquality(gameInput:str, versionInput:str, typeInput:str, keyword
                             patchPath.append(dir.name, (type if (wiiuType != Global.misc) else None), linkName)
                             patchPath = rd.patchForVersion(patchPath.getPath(), f"{type}_abstract", wiiuName, doCustomProcessing=False) # turns into a string here
                             if (patchPath == None): cont(); continue # if the path uses custom processing
-                            linkImage = rd.getImage(patchPath)
+                            try:
+                                linkImage = rd.getImage(patchPath)
+                            except (rd.notFoundException):
+                                print(f"      forced to skip {wiiuName} ({linkName})")
+                                continue
 
                             # equality check
                             value = checkEquality(wiiuImage, linkImage, doTextureGeneration=doGeneration)
