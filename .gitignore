@@ -1,5 +1,5 @@
 # builds
-MCWiiU Texture Builder - Frontend/bin/Release
+MCWiiU Texture Builder - Frontend/bin/
 MCWiiU Texture Builder - Frontend/obj/
 
 # vscode
@@ -10,13 +10,18 @@ MCWiiU Texture Builder - Frontend/.vs/
 # base textures
 MCWiiU Texture Builder - Rebuilt/base_textures/*
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_abstract/
+!MCWiiU Texture Builder - Rebuilt/base_textures/ps4_abstract/
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_mipmaps/
+!MCWiiU Texture Builder - Rebuilt/base_textures/ps4_mipmaps/
 !MCWiiU Texture Builder - Rebuilt/base_textures/drop_samples.png
 !MCWiiU Texture Builder - Rebuilt/base_textures/error.png
 !MCWiiU Texture Builder - Rebuilt/base_textures/notFound.png
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_block.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/ps4_block.png
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_item.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/ps4_item.png
 !MCWiiU Texture Builder - Rebuilt/base_textures/wiiu_particle.png
+!MCWiiU Texture Builder - Rebuilt/base_textures/ps4_particle.png
 
 # tests
 MCWiiU Texture Builder - Rebuilt/test_data/*
